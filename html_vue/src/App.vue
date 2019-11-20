@@ -4,7 +4,7 @@
       <el-col :span="24">
         <div class="grid-content bg-purple-dark">
           <div class="headline">
-            <img class="logo" src="../static/LOGO.png">
+            <router-link to="/"><img class="logo" src="../static/LOGO.png"></router-link>
             <el-link type="primary" :underline="false" href="/login">登录/注册</el-link>
             <div class="time">{{timeNow}}</div>
             <div class="city"><i class="el-icon-location" id="location"></i>上海</div>
