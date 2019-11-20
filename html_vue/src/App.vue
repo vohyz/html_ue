@@ -8,6 +8,7 @@
             <el-link type="primary" :underline="false" href="/login">登录/注册</el-link>
             <div class="time">{{timeNow}}</div>
             <div class="city"><i class="el-icon-location" id="location"></i>上海</div>
+            <router-link to="/usercenter">个人中心</router-link>
           </div>
         </div>
       </el-col>
@@ -66,6 +67,7 @@ export default {
 }
 #location {
   font-size:24px;
+  color:#E16D00;
 }
 .city {
   float:right;

@@ -43,8 +43,8 @@ export default {
         if (!Number.isInteger(value)) {
           callback(new Error('请输入数字值'))
         } else {
-          if (value < 18) {
-            callback(new Error('必须年满18岁'))
+          if (value < 16) {
+            callback(new Error('必须年满16岁'))
           } else {
             callback()
           }
