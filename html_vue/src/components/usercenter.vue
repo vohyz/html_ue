@@ -3,7 +3,7 @@
     <div class="leftmenu">
         <div class="block">
             <el-image class="userimg" :src="src"></el-image>
-            <span class="demonstration">用户名</span>
+            <span class="demonstration">{{user_id}}</span>
         </div>
         <el-menu router :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
           <el-submenu index="1">
@@ -52,8 +52,18 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg'
+      src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
+      user_id: ''
     }
+  },
+  mounted () {
+    this.axios.get('https://mockapi.eolinker.com/lFHBv3l5037a80941cbbd21645201d58cfc96c11ee811eb/user/infoo', {
+      // params参数必写 , 如果没有参数传{}也可以
+      params: {
+        user_id: 'bXK$yb^'
+      }
+    })
+      .then(response => (this.user_id = response))
   }
 }
 </script>
