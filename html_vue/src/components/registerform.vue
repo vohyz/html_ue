@@ -108,7 +108,22 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.$axios.post('/register',
+            {
+              'name': this.ruleForm.name,
+              'pass': this.ruleForm.pass,
+              'checkPass': this.ruleForm.checkPass,
+              'age': this.ruleForm.age,
+              'sex': this.ruleForm.sex
+            }
+          )
+            .then((response) => {
+              alert('提交成功!' + response.data.rst)
+            },
+            (response) => {
+              alert('出错了')
+            }
+            )
         } else {
           console.log('error submit!!')
           return false
