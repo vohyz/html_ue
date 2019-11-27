@@ -49,7 +49,37 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.$axios.post('/login',
+            {
+              'name': this.ruleForm.name,
+              'pass': this.ruleForm.pass
+            }
+          )
+            .then((response) => {
+              if (response.data.rst === 'ok') {
+                // 设置Vuex登录标志为true，默认userLogin为false
+                this.$store.dispatch('userLogin', true)
+                // Vuex在用户刷新的时候userLogin会回到默认值false，所以我们需要用到HTML5储存
+                // 我们设置一个名为Flag，值为isLogin的字段，作用是如果Flag有值且为isLogin的时候，证明用户已经登录了。
+                localStorage.setItem('Flag', 'isLogin')
+                localStorage.setItem('User', response.data.rst)
+                this.$message.success({
+                  message: '登录成功',
+                  showClose: true,
+                  type: 'success'
+                })
+                // 登录成功后跳转到指定页面
+                this.$router.push('/')
+              }
+            },
+            (response) => {
+              this.$message.error({
+                message: '登录失败',
+                showClose: true,
+                type: 'error'
+              })
+            }
+            )
         } else {
           console.log('error submit!!')
           return false

@@ -108,7 +108,30 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.$axios.post('/register',
+            {
+              'name': this.ruleForm.name,
+              'pass': this.ruleForm.pass,
+              'checkPass': this.ruleForm.checkPass,
+              'age': this.ruleForm.age,
+              'sex': this.ruleForm.sex
+            }
+          )
+            .then((response) => {
+              this.$message.success({
+                message: '提交成功',
+                showClose: true,
+                type: 'success'
+              })
+            },
+            (response) => {
+              this.$message.error({
+                message: '注册失败',
+                showClose: true,
+                type: 'error'
+              })
+            }
+            )
         } else {
           console.log('error submit!!')
           return false

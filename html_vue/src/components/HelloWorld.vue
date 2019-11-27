@@ -86,7 +86,6 @@
           </div>
       </li>
     </ul>
-    <login>login</login>
   </div>
 </template>
 

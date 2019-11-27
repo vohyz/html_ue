@@ -3,7 +3,8 @@
     <div class="leftmenu">
         <div class="block">
             <el-image class="userimg" :src="src"></el-image>
-            <span class="demonstration">{{user_id}}</span>
+            <p><span class="demonstration">{{user_id}}</span></p>
+            <el-button :plain="true" @click="logout">登出</el-button>
         </div>
         <el-menu router :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
           <el-submenu index="1">
@@ -12,8 +13,8 @@
               <span>我的需求</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/usercenter/workboard">已发布</el-menu-item>
-              <el-menu-item index="/usercenter/workboard">草稿箱</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=publiced">已发布</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=caogao">草稿箱</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
@@ -22,8 +23,8 @@
               <span>我的任务</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/usercenter/workboard">进行中</el-menu-item>
-              <el-menu-item index="/usercenter/workboard">已完成</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=ing">进行中</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=achieved">已完成</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-menu-item index="/usercenter/workboard">
@@ -47,23 +48,25 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    logout () {
+      this.$store.dispatch('userLogout')
+      this.$message({
+        showClose: true,
+        message: '登出成功',
+        type: 'success'
+      })
+      this.$router.push('/')
     }
   },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
       user_id: ''
     }
   },
   mounted () {
-    this.axios.get('https://mockapi.eolinker.com/lFHBv3l5037a80941cbbd21645201d58cfc96c11ee811eb/user/infoo', {
-      // params参数必写 , 如果没有参数传{}也可以
-      params: {
-        user_id: 'bXK$yb^'
-      }
-    })
-      .then(response => (this.user_id = response))
+    this.user_id = localStorage.getItem('User')
   }
 }
 </script>
@@ -71,7 +74,7 @@ export default {
 <style>
 .container {
   width: 80%;
-  min-width:1000px;
+  min-width:1005px;
   margin: 0 auto;
 }
 .leftmenu {
