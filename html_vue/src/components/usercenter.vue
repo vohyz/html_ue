@@ -27,9 +27,9 @@
               <el-menu-item index="/usercenter/workboard?type=achieved">已完成</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-menu-item index="/usercenter/workboard">
+          <el-menu-item index="/usercenter/createorder">
             <i class="el-icon-menu"></i>
-            <span slot="title">联系人</span>
+            <span slot="title">发布任务</span>
           </el-menu-item>
         </el-menu>
     </div>
