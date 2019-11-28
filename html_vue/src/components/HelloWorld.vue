@@ -79,6 +79,12 @@
           awesome-vue
         </a>
       </li>
+      <li>
+        <router-link to="/login">logggin</router-link>
+        <div class="flexbox" id="loginbox">
+          <router-view></router-view>
+          </div>
+      </li>
     </ul>
   </div>
 </template>
@@ -109,5 +115,16 @@ li {
 }
 a {
   color: #42b983;
+}
+.flexbox {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    right: 0;
+    width: 500px;
+    height: 400px;
+    margin: 0 auto;
+    margin-top: 150px;
+    background-color: #fff;
 }
 </style>

@@ -1,14 +1,65 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <el-row>
+      <el-col :span="24">
+        <div class="grid-content bg-purple-dark">
+          <div class="headline">
+            <!-- 路由跳转使用router-link比使用a要快很多很多 -->
+            <router-link to="/"><img class="logo" src="../static/LOGO.png"></router-link>
+            <router-link :to="loginlink" class="el-link">{{hellouseer}}</router-link>
+            <div class="time">{{timeNow}}</div>
+            <div class="city"><i class="el-icon-location" id="location"></i>上海</div>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
     <router-view/>
   </div>
 </template>
 <script>
+let moment = require('moment')
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+      timeNow: '',
+      hellouseer: '',
+      loginlink: '',
+      Flag: ''
+    }
+  },
+  computed: {
+    listenFlag () {
+      return this.$store.state.isLogin
+    }
+  },
+  watch: {
+    listenFlag: function (thenew, theold) {
+      console.log('theold' + theold)
+      console.log('thenew' + thenew)
+      if (theold === false && thenew === true) {
+        let User = localStorage.getItem('User')
+        this.hellouseer = '欢迎 [' + User + '] 个人中心'
+        this.loginlink = '/usercenter'
+      } else {
+        this.hellouseer = '登录/注册'
+        this.loginlink = '/login'
+      }
+    }
+  },
+  mounted () {
+    this.timeNow = moment().utc().format('YYYY年MM月DD日') + ' ' + moment().utc().format('dddd')
+    let islogin = this.$store.state.isLogin
+    if (islogin === true) {
+      let User = localStorage.getItem('User')
+      this.hellouseer = '欢迎 [' + User + ']个人中心'
+      this.loginlink = '/usercenter'
+    } else {
+      this.hellouseer = '登录/注册'
+      this.loginlink = '/login'
+    }
+  }
 }
-
 </script>
 
 <style>
@@ -17,7 +68,47 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+.el-row {
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.el-col {
+  border-radius: 4px;
+}
+.grid-content {
+  background:#fff;
+}
+.headline {
+  width:70%;
+  height:50px;
+  padding:10px;
+  margin:0 auto;
+}
+.logo {
+  height:50px;
+  float:left;
+  margin-left:40px;
+}
+.el-link {
+  padding:10px;
+  font-size:20px;
+  color: #E16D00;
+}
+#location {
+  font-size:24px;
+  color:#E16D00;
+}
+.city {
+  float:right;
+  padding:10px;
+  font-size:20px;
+}
+.time {
+  float:right;
+  padding:10px;
+  font-size:20px;
 }
 </style>
