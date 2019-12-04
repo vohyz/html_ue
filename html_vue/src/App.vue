@@ -63,18 +63,23 @@ export default {
 </script>
 
 <style>
+  body{
+    margin: 0;
+    background-color: rgb(245,245,245);
+  }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  width: 100%;
 }
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
+/*.el-row {*/
+/*  margin-bottom: 20px;*/
+/*  &:last-child {*/
+/*    margin-bottom: 0;*/
+/*  }*/
+/*}*/
 .el-col {
   border-radius: 4px;
 }
@@ -82,15 +87,17 @@ export default {
   background:#fff;
 }
 .headline {
-  width:70%;
-  height:50px;
-  padding:10px;
+  width:100%;
+  min-width: 1400px;
+  height:70px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   margin:0 auto;
 }
 .logo {
-  height:50px;
+  height:95%;
   float:left;
-  margin-left:40px;
+  margin-left: 100px;
 }
 .el-link {
   padding:10px;

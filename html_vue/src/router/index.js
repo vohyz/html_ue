@@ -7,6 +7,8 @@ import login from '@/components/login'
 import usercenter from '@/components/usercenter'
 import workboard from '@/components/workboard'
 import createorder from '@/components/createorder'
+import Index from '@/components/Index'
+import Task from '@/components/Task'
 
 Vue.use(Router)
 
@@ -16,6 +18,18 @@ const router = new Router({
       path: '/',
       name: 'HelloWorld',
       component: HelloWorld
+    },
+    {
+      path: '/index',
+      name: 'Index',
+      component: Index,
+      children: [
+        {
+          path: '/index/task',
+          name: 'Task',
+          component: Task
+        }
+      ]
     },
     {
       path: '/login',

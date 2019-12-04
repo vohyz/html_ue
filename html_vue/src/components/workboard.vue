@@ -26,7 +26,7 @@ export default {
   watch: {
     type: function (thenew, theold) {
       // post可以直接发参数，get必须用params打包
-      this.$axios.get('http://127.0.0.1:5001/order',
+      this.$axios.get('http://39.107.229.211:5001/order',
         {
           params: {
             'order_id': '1',
@@ -50,7 +50,7 @@ export default {
     }
   },
   mounted () {
-    this.$axios.get('http://127.0.0.1:5001/order',
+    this.$axios.get('http://39.107.229.211:5001/order',
       {
         params: {
           'order_id': '1',

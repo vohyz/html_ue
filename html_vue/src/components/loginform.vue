@@ -53,7 +53,8 @@ export default {
             {
               'name': this.ruleForm.name,
               'pass': this.ruleForm.pass
-            }
+            },
+            {headers: {'Content-Type': 'multipart/form-data'}}
           )
             .then((response) => {
               if (response.data.rst === 'ok') {
