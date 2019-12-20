@@ -52,43 +52,68 @@
     </div>
     <div class="rightModule">
       <div class="avatar" style="margin-top: 10px">
-        <el-avatar :size="95" fit="fill" src="../static/avatar.jpg"></el-avatar><br>
+        <el-avatar :size="95" shape="square" fit="fill" src="../static/avatar.jpg"></el-avatar><br>
       </div>
       <div class="name" style="margin-top: 20px">
         <span style="font-size: x-large">Leo</span>
       </div>
-<!--      <div class="selectWord" style="width: 115px;padding-left: 36%;margin-top: 50px">-->
-<!--        <el-tabs v-model="activeName" @tab-click="handleClick">-->
-<!--          <el-tab-pane label="About" name="first"></el-tab-pane>-->
-<!--          <el-tab-pane label="Tasks" name="second"></el-tab-pane>-->
-<!--        </el-tabs>-->
-<!--      </div>-->
       <div class="info" style="height: 500px">
-        <div class="credit" style="border-radius: 50%;width: 100px;background-color: #F56C6C;height: 30px;padding-top: 5px;margin-top: 50px;float: left">
-          <i class="el-icon-coin"></i>
+        <div class="credit">
+          <i class="el-icon-coin" style="color: #13ce66"></i>
           <label>信誉分</label>
         </div>
-        <div class="wechat" style="padding-top: 5px;margin-top: 50px;border-radius: 100%;width: 100px;height: 30px;background-color: #67C23A;float: left">
-          <i class="el-icon-chat-dot-round"></i>
+        <div class="wechat">
+          <i class="el-icon-chat-dot-round" style="color: #13ce66"></i>
           <label>绑定微信</label>
         </div>
-        <div class="plus">
-          <el-tooltip class="item" effect="light" content="创建任务" placement="right">
-            <el-button type="primary" icon="el-icon-plus" circle></el-button>
-          </el-tooltip>
-        </div>
         <div class="mytasks">
-          <span>我接单的任务: 2</span><br>
-          <span>我发布的任务: 5</span><br>
+          <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse-item name="1">
+              <template slot="title">
+                <div style="width: 100%">
+                  <el-badge :value="4" class="item">
+                    <span style="font-size: 15px">正在执行的任务</span>
+                  </el-badge>
+                </div>
+              </template>
+                <el-col v-for="o in 4" :key="o" >
+                  <el-card class="box-card" shadow="never">
+                    <div class="text item">
+                      {{'列表内容 ' + o }}
+                    </div>
+                  </el-card>
+                </el-col>
+            </el-collapse-item>
+            <el-collapse-item name="2">
+              <template slot="title">
+                <div style="width: 100%">
+                  <el-badge :value="4" class="item">
+                    <span style="font-size: 15px">当前发布的任务</span>
+                  </el-badge>
+                </div>
+              </template>
+              <el-col v-for="o in 4" :key="o" >
+                <el-card class="box-card" shadow="never">
+                  <div class="text item">
+                    {{'列表内容 ' + o }}
+                  </div>
+                </el-card>
+              </el-col>
+            </el-collapse-item>
+          </el-collapse>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script type="text/javascript">
 export default {
   name: 'Index',
+  mounted () {
+    // 事件监听滚动条
+    window.addEventListener('scroll', this.watchScroll)
+  },
   methods: {
     handleOpen (key, keyPath) {
       console.log(key, keyPath)
@@ -99,9 +124,15 @@ export default {
     handleClick (tab, event) {
       console.log(tab, event)
     },
+    handleChange (val) {
+      console.log(val)
+    },
     test () {
       alert('success')
     }
+    // showTask () {
+    //
+    // }
   },
   data () {
     return {
@@ -113,13 +144,16 @@ export default {
 </script>
 
 <style scoped>
+  .Module{
+    height: 1000px;
+  }
   .sideModule{
     width: 14%;
     min-width: 150px;
     margin-top: 8px;
     float: left;
     background-color: white;
-    height: max-content;
+    height: 100%;
   }
   .taskModule{
     margin-top: 8px;
@@ -128,6 +162,7 @@ export default {
     min-width: 600px;
     float: left;
     background-color: white;
+    height: 100%;
   }
   .rightModule{
     width: 24.4%;
@@ -136,15 +171,11 @@ export default {
     margin-top: 8px;
     float: left;
     background-color: white;
+    height: 100%;
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 99%;
     min-height: 400px;
-  }
-  .plus{
-    width: 40px;
-    height: 40px;
-    padding-left: 90%;
   }
   .el-menu--collapse {
     width: 50%;
@@ -154,5 +185,20 @@ export default {
   }
   .el-menu{
     border-right: none;
+  }
+  .mytasks{
+    padding-top: 150px;
+  }
+  .credit{
+    width: 100px;
+    height: 30px;
+    margin-top: 50px;
+    float: left;
+  }
+  .wechat{
+    width: 100px;
+    height: 30px;
+    float: left;
+    margin-top: 50px;
   }
 </style>

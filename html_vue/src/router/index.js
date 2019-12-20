@@ -9,6 +9,7 @@ import workboard from '@/components/workboard'
 import createorder from '@/components/createorder'
 import Index from '@/components/Index'
 import Task from '@/components/Task'
+import TaskDetail from '@/components/TaskDetail'
 
 Vue.use(Router)
 
@@ -28,8 +29,18 @@ const router = new Router({
           path: '/index/task',
           name: 'Task',
           component: Task
+        },
+        {
+          path: '/index/createorder',
+          name: 'createorder',
+          component: createorder
         }
       ]
+    },
+    {
+      path: '/taskdetail',
+      name: 'TaskDetail',
+      component: TaskDetail
     },
     {
       path: '/login',

@@ -11,11 +11,19 @@
         <el-breadcrumb-item>
           <span style="font-size: medium">英雄联盟</span>
         </el-breadcrumb-item>
+        <div class="plus">
+          <router-link to="/index/createorder">
+            <el-tooltip class="item" effect="light" content="创建任务" placement="right">
+<!--              <el-button type="primary" icon="el-icon-plus" circle></el-button>-->
+              <i class="el-icon-circle-plus-outline" style="font-size: 30px"></i>
+            </el-tooltip>
+          </router-link>
+        </div>
       </el-breadcrumb>
     </div>
     <div class="taskCard">
-      <el-col>
-        <el-card shadow="hover">
+      <el-col v-for="i in 8" :key="i">
+        <el-card class="cards" shadow="hover">
           <div class="introWord">
             <p id="intro">
               <span class="taskTitle" style="font-size: large">标题</span><br>
@@ -55,7 +63,7 @@ export default {
 
 <style scoped>
   .task{
-    height: 800px;
+    height: 100%;
   }
   .guideBar{
     padding-left: 15px;
@@ -90,5 +98,16 @@ export default {
   }
   .el-card__body {
     padding: 10px;
+  }
+  .plus{
+    width: 40px;
+    height: 40px;
+    padding-left: 85%;
+  }
+  .el-icon-circle-plus-outline{
+    margin-top: 5px;
+  }
+  .cards{
+    margin-bottom: 4px;
   }
 </style>

@@ -66,6 +66,7 @@ export default {
   body{
     margin: 0;
     background-color: rgb(245,245,245);
+    min-width: 1200px;
   }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -103,10 +104,12 @@ export default {
   padding:10px;
   font-size:20px;
   color: #E16D00;
+  margin-top: 10px;
 }
 #location {
   font-size:24px;
   color:#E16D00;
+  margin-top: 10px;
 }
 .city {
   float:right;
@@ -116,6 +119,7 @@ export default {
 .time {
   float:right;
   padding:10px;
-  font-size:20px;
+  font-size:18px;
+  margin-top: 12px;
 }
 </style>

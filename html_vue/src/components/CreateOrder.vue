@@ -46,6 +46,9 @@
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
+        <router-link to="/index/task">
+          <el-button>返回</el-button>
+        </router-link>
       </el-form-item>
     </el-form>
   </div>

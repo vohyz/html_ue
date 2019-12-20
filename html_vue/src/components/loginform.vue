@@ -51,10 +51,9 @@ export default {
         if (valid) {
           this.$axios.post('/login',
             {
-              'name': this.ruleForm.name,
-              'pass': this.ruleForm.pass
-            },
-            {headers: {'Content-Type': 'multipart/form-data'}}
+              'user_name': this.ruleForm.name,
+              'user_password': this.ruleForm.pass
+            }
           )
             .then((response) => {
               if (response.data.rst === 'ok') {
