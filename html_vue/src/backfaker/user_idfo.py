@@ -35,50 +35,63 @@ class Login(Resource):
         # rst = self.create(params)
         return {'rst': 'ok'}
 
+class Order(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('order_id', type=str)
+        self.parser.add_argument('user_id', type=str)
+        self.parser.add_argument('order_type', type=str)
+
     def get(self):
         data = self.parser.parse_args()
         print(data)
-        # rst = self.create(params)
-        time = str(datetime.datetime.now())
-        return{
+        n = 0
+        price = '1'
+        if data['order_type'] == 'publiced':
+            n = 4
+            price = '已发布'
+            a = '小明'
+            b = '小红'
+        elif data['order_type'] == 'caogao':
+            n = 2
+            price = '草稿箱'
+            a = '小明'
+            b = '小红'
+        elif data['order_type'] == 'ing':
+            n = 5
+            price = '进行中'
+            a = '小红'
+            b = '小明'
+        elif data['order_type'] == 'achieved':
+            n = 6
+            price = '已完成'
+            a = '小红'
+            b = '小明'
+        params = {
             'code': 200,
-            'message':'success',
-            'time_now': time,
-            'data':{
-                '10-20':{
-                    'M':14,
-                    'F':50
-                },
-                '20-25':{
-                    'M':14,
-                    'F':50
-                },
-                '25-30':{
-                    'M':14,
-                    'F':50
-                },
-                '30-35':{
-                    'M':14,
-                    'F':50
-                },
-                '35-40':{
-                    'M':14,
-                    'F':50
-                },
-                '40-50':{
-                    'M':14,
-                    'F':50
-                },
-                '>50':{
-                    'M':14,
-                    'F':50
+            'message': 'success',
+            'works': [
+                {
+                    'title': 'work' + str(i),
+                    'beinger': a,
+                    'ender': b,
+                    'price': price
                 }
-            }
-        }
+                for i in range(n)
+            ]
+        }    
+        # rst = self.create(params)
+        return params
+
+    def post(self):
+        data = self.parser.parse_args()
+        print(data)
+        # rst = self.create(params)
+        return {'rst': 'ok'}
 
 api.add_resource(Register, '/register')
 api.add_resource(Login, '/login')
+api.add_resource(Order, '/order')
 
 if __name__ == '__main__':
     app.run(debug=True, port= 5001)
-    print(datetime.datetime.now())

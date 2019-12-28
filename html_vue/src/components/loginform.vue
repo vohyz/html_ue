@@ -63,7 +63,6 @@ export default {
                 // 我们设置一个名为Flag，值为isLogin的字段，作用是如果Flag有值且为isLogin的时候，证明用户已经登录了。
                 localStorage.setItem('Flag', 'isLogin')
                 localStorage.setItem('User', response.data.rst)
-                // iViewUi的友好提示
                 this.$message.success({
                   message: '登录成功',
                   showClose: true,
@@ -74,7 +73,11 @@ export default {
               }
             },
             (response) => {
-              alert('出错了')
+              this.$message.error({
+                message: '登录失败',
+                showClose: true,
+                type: 'error'
+              })
             }
             )
         } else {

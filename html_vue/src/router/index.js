@@ -6,6 +6,7 @@ import HelloWorld from '@/components/HelloWorld'
 import login from '@/components/login'
 import usercenter from '@/components/usercenter'
 import workboard from '@/components/workboard'
+import createorder from '@/components/createorder'
 
 Vue.use(Router)
 
@@ -36,6 +37,11 @@ const router = new Router({
           path: '/usercenter/workboard',
           name: 'workboard',
           component: workboard
+        },
+        {
+          path: '/usercenter/createorder',
+          name: 'createorder',
+          component: createorder
         }
       ]
     }

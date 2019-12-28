@@ -4,8 +4,9 @@
       <el-col :span="24">
         <div class="grid-content bg-purple-dark">
           <div class="headline">
+            <!-- 路由跳转使用router-link比使用a要快很多很多 -->
             <router-link to="/"><img class="logo" src="../static/LOGO.png"></router-link>
-            <el-link type="primary" :underline="false" :href="loginlink">{{hellouseer}}</el-link>
+            <router-link :to="loginlink" class="el-link">{{hellouseer}}</router-link>
             <div class="time">{{timeNow}}</div>
             <div class="city"><i class="el-icon-location" id="location"></i>上海</div>
           </div>
@@ -94,6 +95,7 @@ export default {
 .el-link {
   padding:10px;
   font-size:20px;
+  color: #E16D00;
 }
 #location {
   font-size:24px;

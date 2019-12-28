@@ -9,6 +9,13 @@
     <el-form-item label="确认密码" prop="checkPass">
       <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
     </el-form-item>
+    <el-form-item label="手机号码" prop="phone">
+      <el-input v-model.number="ruleForm.phone"></el-input>
+    </el-form-item>
+    <el-form-item label="验证码" prop="vcode">
+      <el-input v-model.number="ruleForm.vcode" style="width:60%;float:left;"></el-input>
+      <el-button type="primary" style="width:35%;" @click="submitForm('ruleForm')">获取验证码</el-button>
+    </el-form-item>
     <el-form-item label="年龄" prop="age">
       <el-input v-model.number="ruleForm.age"></el-input>
     </el-form-item>
@@ -82,6 +89,8 @@ export default {
         name: '',
         pass: '',
         checkPass: '',
+        phone: '',
+        vcode: '',
         age: '',
         sex: ''
       },
@@ -113,15 +122,25 @@ export default {
               'name': this.ruleForm.name,
               'pass': this.ruleForm.pass,
               'checkPass': this.ruleForm.checkPass,
+              'phone': this.ruleForm.phone,
+              'vcode': this.ruleForm.vcode,
               'age': this.ruleForm.age,
               'sex': this.ruleForm.sex
             }
           )
             .then((response) => {
-              alert('提交成功!' + response.data.rst)
+              this.$message.success({
+                message: '提交成功',
+                showClose: true,
+                type: 'success'
+              })
             },
             (response) => {
-              alert('出错了')
+              this.$message.error({
+                message: '注册失败',
+                showClose: true,
+                type: 'error'
+              })
             }
             )
         } else {
@@ -132,6 +151,35 @@ export default {
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
+    },
+    send_smscode (formName) { // 此处需要补全图像验证码以及手机的validate
+      this.ruleForm.phone.validate((valid) => {
+        if (valid) {
+          this.$axios.post('/sms_code',
+            {
+              'phone': this.ruleForm.phone
+            }
+          )
+            .then((response) => {
+              this.$message.success({
+                message: '提交成功',
+                showClose: true,
+                type: 'success'
+              })
+            },
+            (response) => {
+              this.$message.error({
+                message: '注册失败',
+                showClose: true,
+                type: 'error'
+              })
+            }
+            )
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     }
   }
 }

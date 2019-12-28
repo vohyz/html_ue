@@ -3,7 +3,7 @@
     <div class="leftmenu">
         <div class="block">
             <el-image class="userimg" :src="src"></el-image>
-            <span class="demonstration">{{user_id}}</span>
+            <p><span class="demonstration">{{user_id}}</span></p>
             <el-button :plain="true" @click="logout">登出</el-button>
         </div>
         <el-menu router :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
@@ -13,8 +13,8 @@
               <span>我的需求</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/usercenter/workboard">已发布</el-menu-item>
-              <el-menu-item index="/usercenter/workboard">草稿箱</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=publiced">已发布</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=caogao">草稿箱</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
@@ -23,13 +23,13 @@
               <span>我的任务</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/usercenter/workboard">进行中</el-menu-item>
-              <el-menu-item index="/usercenter/workboard">已完成</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=ing">进行中</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=achieved">已完成</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-menu-item index="/usercenter/workboard">
+          <el-menu-item index="/usercenter/createorder">
             <i class="el-icon-menu"></i>
-            <span slot="title">联系人</span>
+            <span slot="title">发布任务</span>
           </el-menu-item>
         </el-menu>
     </div>
@@ -61,7 +61,6 @@ export default {
   },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
       user_id: ''
     }
