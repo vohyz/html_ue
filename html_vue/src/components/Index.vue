@@ -58,11 +58,11 @@
         <span style="font-size: x-large">Leo</span>
       </div>
       <div class="info" style="height: 500px">
-        <div class="credit">
+        <div class="credit" style="width: 50%;border-right: 1px solid rgb(200,200,200);">
           <i class="el-icon-coin" style="color: #13ce66"></i>
           <label>信誉分</label>
         </div>
-        <div class="wechat">
+        <div class="wechat" style="width: 49%">
           <i class="el-icon-chat-dot-round" style="color: #13ce66"></i>
           <label>绑定微信</label>
         </div>
@@ -72,7 +72,7 @@
               <template slot="title">
                 <div style="width: 100%">
                   <el-badge :value="4" class="item">
-                    <span style="font-size: 15px">正在执行的任务</span>
+                    <span style="font-size: 17px">正在执行的任务</span>
                   </el-badge>
                 </div>
               </template>
@@ -88,7 +88,7 @@
               <template slot="title">
                 <div style="width: 100%">
                   <el-badge :value="4" class="item">
-                    <span style="font-size: 15px">当前发布的任务</span>
+                    <span style="font-size: 17px">当前发布的任务</span>
                   </el-badge>
                 </div>
               </template>

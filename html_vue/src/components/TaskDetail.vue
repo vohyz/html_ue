@@ -59,6 +59,10 @@ export default {
     width: 100%;
     height: 110px;
   }
+  .chatView{
+    border-right: 1px solid rgb(230,230,230);
+    border-left: 1px solid rgb(230,230,230);
+  }
   .picture{
     text-align: left;
     width: 100px;
