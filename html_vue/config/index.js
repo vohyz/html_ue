@@ -3,10 +3,12 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-
 module.exports = {
   dev: {
-
+    devServer: {
+      sockHost: 'http://localhost:8080',
+      disableHostCheck: true,
+    },
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -15,8 +17,15 @@ module.exports = {
         target: 'http://127.0.0.1:9000',
         changeOrigin: true,
         pathRewrite: {
-        '^/api': 'http://127.0.0.1:9000' 
-        }
+          '^/api': 'http://127.0.0.1:9000'
+        }
+        },
+      '/sock': {
+        target: 'ws://localhost:8080',
+        changeOrigin: true,
+        pathRewrite: {
+        '^/sock': 'ws://localhost:8080'
+        }
       }
     },
 

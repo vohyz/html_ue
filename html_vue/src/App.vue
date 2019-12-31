@@ -65,7 +65,7 @@ export default {
 <style>
   body{
     margin: 0;
-    background-color: rgb(245,245,245);
+    /*background-color: rgb(245,245,245);*/
     min-width: 1200px;
   }
 #app {
