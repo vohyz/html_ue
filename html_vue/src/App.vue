@@ -161,18 +161,24 @@ export default {
 </script>
 
 <style>
+  body{
+    margin: 0;
+    /*background-color: rgb(245,245,245);*/
+    min-width: 1200px;
+  }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  width: 100%;
 }
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
+/*.el-row {*/
+/*  margin-bottom: 20px;*/
+/*  &:last-child {*/
+/*    margin-bottom: 0;*/
+/*  }*/
+/*}*/
 .el-col {
   border-radius: 4px;
 }
@@ -180,24 +186,28 @@ export default {
   background:#fff;
 }
 .headline {
-  width:80%;
-  height:50px;
-  padding:10px;
+  width:100%;
+  min-width: 1400px;
+  height:70px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   margin:0 auto;
 }
 .logo {
-  height:50px;
+  height:95%;
   float:left;
-  margin-left:40px;
+  margin-left: 100px;
 }
 .el-link {
   padding:10px;
   font-size:20px;
   color: #E16D00;
+  margin-top: 10px;
 }
 #location {
   font-size:24px;
   color:#E16D00;
+  margin-top: 10px;
 }
 #notice {
   font-size:24px;
@@ -216,6 +226,7 @@ export default {
 .time {
   float:right;
   padding:10px;
-  font-size:20px;
+  font-size:18px;
+  margin-top: 12px;
 }
 </style>

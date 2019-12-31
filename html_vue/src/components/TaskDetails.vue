@@ -73,6 +73,17 @@ export default {
       this.$router.push({
         path: `/taskdetails/${id}`
       })
+    },
+    receiveTask () {
+      this.$axios.post('/getTask', {
+        'taskId': this.task.id,
+        'userName': this.user.userName
+      }).then((response) => {
+        console.log(response)
+      })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   },
   created () {
@@ -82,29 +93,46 @@ export default {
       }
     )
       .then((response) => {
-        console.log(response.data)
-        this.task = response.data
-        this.chated = true
-        console.log(this.task.publisher)
-        this.$store.dispatch('setaimuser', this.task.publisher)
-      },
-      (response) => {
-        this.$message.error({
-          message: '网络连接失败',
-          showClose: true,
-          type: 'error'
-        })
-      }
+          console.log(response.data)
+          this.task = response.data
+          this.chated = true
+          console.log(this.task.publisher)
+          this.$store.dispatch('setaimuser', this.task.publisher)
+        },
+        (response) => {
+          this.$message.error({
+            message: '网络连接失败',
+            showClose: true,
+            type: 'error'
+          })
+        }
       )
+  },
+  beforeMount () {
+    // 获取任务信息
+    this.$axios.get('/task/getById', {
+      params: {'id': this.task_id}
+    }).then((response) => {
+      this.task = response.data.thistask
+    })
+      .catch((error) => {
+        console.log(error)
+      })
+    // 获取发布者信息
+    this.$axios.get('/getuserinfo', {
+      params: {'username': this.task.publisher}
+    }).then((response) => {
+      this.user = response.data.userinfo
+    })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 }
 </script>
 
 <style scoped>
   @import '../element/index.css';
-  .Main {
-    width:100%;
-  }
   .Task{
     width: 68%;
     float: left;
@@ -119,11 +147,15 @@ export default {
     margin-left: 1%;
   }
   .userInfo{
-    border-bottom: 1px solid rgb(230,230,230);
+    border: 1px solid rgb(230,230,230);
+    border-radius: 5px;
+    width: 90%;
+    height: 110px;
+  }
+  .chatView{
+    border-radius: 5px;
     border-right: 1px solid rgb(230,230,230);
     border-left: 1px solid rgb(230,230,230);
-    width: 100%;
-    height: 110px;
   }
   .picture{
     text-align: left;

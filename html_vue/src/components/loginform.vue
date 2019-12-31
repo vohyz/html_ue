@@ -51,8 +51,8 @@ export default {
         if (valid) {
           this.$axios.post('/login',
             {
-              'name': this.ruleForm.name,
-              'pass': this.ruleForm.pass
+              'user_name': this.ruleForm.name,
+              'user_password': this.ruleForm.pass
             }
           )
             .then((response) => {
