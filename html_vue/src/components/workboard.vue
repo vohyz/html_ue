@@ -1,7 +1,8 @@
 <template>
   <div>
-    <el-card shadow="hover" class="workcard" v-for="work in works" :key="work.title">
+    <el-card shadow="hover" class="workcard" v-for="work in works" style="position:relative;" :key="work.title"  >
       <div>{{work.title}}</div>
+      <button style="width:100%;height:100%;position:absolute;left:0;top:0;background: 0;border: 0;cursor: pointer" @click="getDetails(work.id)"></button>
       <div style="float:left;">{{work.beinger}}</div>
       <div style="float:right;">{{work.ender}}</div>
       <div style="color:red">{{work.price}}</div>
@@ -47,6 +48,13 @@ export default {
           })
         }
         )
+    }
+  },
+  methods: {
+    getDetails (id) {
+      this.$router.push({
+        path: `/taskdetails/${id}`
+      })
     }
   },
   mounted () {

@@ -7,6 +7,7 @@ const store = new Vuex.Store({
   // 设置属性
   state: {
     isLogin: false,
+    aim_user: '',
     user: {}
   },
 
@@ -25,6 +26,9 @@ const store = new Vuex.Store({
     logout (state) {
       localStorage.setItem('Flag', 'not')
       state.isLogin = false
+    },
+    aim (state, flag) {
+      state.aim_user = flag
     }
   },
 
@@ -36,6 +40,9 @@ const store = new Vuex.Store({
     },
     userLogout ({commit}) {
       commit('logout')
+    },
+    setaimuser ({commit}, flag) {
+      commit('aim', flag)
     }
   }
 })

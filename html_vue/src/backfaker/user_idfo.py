@@ -31,9 +31,10 @@ class Login(Resource):
 
     def post(self):
         data = self.parser.parse_args()
+        
         print(data)
         # rst = self.create(params)
-        return {'rst': 'ok'}
+        return {'rst': data['name']}
 
 class Order(Resource):
     def __init__(self):
@@ -72,6 +73,7 @@ class Order(Resource):
             'message': 'success',
             'works': [
                 {
+                    'id':str(i),
                     'title': 'work' + str(i),
                     'beinger': a,
                     'ender': b,
@@ -88,10 +90,38 @@ class Order(Resource):
         print(data)
         # rst = self.create(params)
         return {'rst': 'ok'}
+class Task(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('task_id', type=str)
+
+    def post(self):
+        data = self.parser.parse_args()
+        print(data)
+        if data['task_id'] == '0':
+            # rst = self.create(params)
+            return {
+                'publisher':'1652514',
+                'title': '任务名',
+                'info':'任务详细介绍，详细详细xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                'bonus':'150',
+                'tags':['英雄联盟', '守望先锋', '网游', '娱乐', '休闲'],
+                'createtime':'2019-12-28 21:06:03'
+                }
+        else:
+            return {
+                'publisher':'1752514',
+                'title': '任务名',
+                'info':'任务详细介绍，详细详细xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                'bonus':'150',
+                'tags':['英雄联盟', '守望先锋', '网游', '娱乐', '休闲'],
+                'createtime':'2019-12-28 21:06:03'
+                }
 
 api.add_resource(Register, '/register')
 api.add_resource(Login, '/login')
 api.add_resource(Order, '/order')
+api.add_resource(Task, '/task')
 
 if __name__ == '__main__':
     app.run(debug=True, port= 5001)

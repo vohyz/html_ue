@@ -56,7 +56,7 @@ export default {
             }
           )
             .then((response) => {
-              if (response.data.rst === 'ok') {
+              if (response.data.rst) {
                 // 设置Vuex登录标志为true，默认userLogin为false
                 this.$store.dispatch('userLogin', true)
                 // Vuex在用户刷新的时候userLogin会回到默认值false，所以我们需要用到HTML5储存

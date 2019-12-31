@@ -8,7 +8,18 @@ import './element/index.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import store from './store'
+import vueJsonp from 'vue-jsonp'
+import BaiduMap from 'vue-baidu-map'
+import VueSocketIO from 'vue-socket.io'
 
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://127.0.0.1:5000/test'
+}))
+Vue.use(BaiduMap, {
+  ak: '7rk2V6zD49gvsR41OwylhifNcgMYGCGh'
+})
+Vue.use(vueJsonp)
 Vue.use(VueAxios, axios)
 Vue.use(ElementUI)
 // 将axios绑定

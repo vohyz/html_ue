@@ -7,6 +7,7 @@ import login from '@/components/login'
 import usercenter from '@/components/usercenter'
 import workboard from '@/components/workboard'
 import createorder from '@/components/createorder'
+import taskdetails from '@/components/TaskDetails'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ const router = new Router({
       meta: {
         isLogin: false
       }
+    },
+    {
+      path: '/taskdetails/:id',
+      name: 'taskdetails',
+      component: taskdetails
     },
     {
       path: '/usercenter',

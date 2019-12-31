@@ -9,6 +9,39 @@
             <router-link :to="loginlink" class="el-link">{{hellouseer}}</router-link>
             <div class="time">{{timeNow}}</div>
             <div class="city"><i class="el-icon-location" id="location"></i>上海</div>
+            <el-popover
+                ref="popover"
+                placement="bottom"
+                width="360"
+                trigger="click">
+                <el-table :data="gridData" height="235" @row-click="call">
+                  <el-table-column width="80" property="name" label="消息来源"></el-table-column>
+                  <el-table-column width="150" property="content" label="内容"></el-table-column>
+                  <el-table-column width="80" property="time" label="时间"></el-table-column>
+                  <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="50">
+                        <template slot-scope="scope">
+                          <el-button
+                            type="text"
+                            size="small">
+                            移除
+                          </el-button>
+                        </template>
+                      </el-table-column>
+                </el-table>
+              </el-popover>
+            <el-badge :value="notices" class="item" id="noticebox" style="padding: 0;margin: 10px;" :hidden="noticeflag">
+              <div class="box" style="cursor: pointer" v-popover:popover><i class="el-icon-bell" id="notice"></i></div>
+            </el-badge>
+            <el-drawer
+              title="聊天"
+              :visible.sync="drawer"
+              :direction="direction"
+              :before-close="handleClose">
+              <chat  v-if="chated" :aim_user="aim_user"></chat>
+            </el-drawer>
           </div>
         </div>
       </el-col>
@@ -17,6 +50,7 @@
   </div>
 </template>
 <script>
+import chat from './components/chat.vue'
 let moment = require('moment')
 export default {
   name: 'App',
@@ -25,12 +59,51 @@ export default {
       timeNow: '',
       hellouseer: '',
       loginlink: '',
-      Flag: ''
+      Flag: '',
+      user: '',
+      gridData: [],
+      noticeflag: true,
+      drawer: false,
+      aim_user: '',
+      chated: false
+    }
+  },
+  components: {
+    chat: chat
+  },
+  sockets: {
+    // 通信的name
+    // 这里是监听connect事件
+    connect: function () {
+      this.id = this.$socket.id
+      // alert('建立连接')
+      console.log('我的id', this.user)
+      this.$socket.emit('my_id', this.user)
+    },
+    disconnect: function () {
+      console.log('断开连接')
+    },
+    reconnect: function () {
+      console.log('重新连接')
+      this.$socket.emit('conect')
+    },
+    server_response: function (data) {
+      console.log('接收数据', data)
+    },
+    server_notice: function (data) {
+      console.log('ddddddddddddddd', data)
+      this.gridData.push(data)
+    },
+    send_message: function (data) {
+      this.$socket.emit('message', data)
     }
   },
   computed: {
     listenFlag () {
       return this.$store.state.isLogin
+    },
+    notices () {
+      return this.gridData.length
     }
   },
   watch: {
@@ -41,13 +114,38 @@ export default {
         let User = localStorage.getItem('User')
         this.hellouseer = '欢迎 [' + User + '] 个人中心'
         this.loginlink = '/usercenter'
+        this.$socket.connect()
       } else {
         this.hellouseer = '登录/注册'
         this.loginlink = '/login'
       }
+    },
+    notices: function (thenew, theold) {
+      if (thenew === 0) {
+        this.noticeflag = true
+      } else {
+        this.noticeflag = false
+      }
+    }
+  },
+  methods: {
+    call (row, column, cell, event) {
+      if (column.label === '操作') {
+        this.gridData.splice(row, 1)
+      } else {
+        this.aim_user = row.name
+        this.chated = true
+        this.drawer = true
+      }
+    },
+    handleClose (done) {
+      this.chated = false
+      this.drawer = false
+      this.$socket.emit('my_aim', this.user + ' ' + this.$store.state.aim_user)
     }
   },
   mounted () {
+    this.user = localStorage.getItem('User')
     this.timeNow = moment().utc().format('YYYY年MM月DD日') + ' ' + moment().utc().format('dddd')
     let islogin = this.$store.state.isLogin
     if (islogin === true) {
@@ -82,7 +180,7 @@ export default {
   background:#fff;
 }
 .headline {
-  width:70%;
+  width:80%;
   height:50px;
   padding:10px;
   margin:0 auto;
@@ -101,9 +199,18 @@ export default {
   font-size:24px;
   color:#E16D00;
 }
+#notice {
+  font-size:24px;
+  color:#E16D00;
+}
 .city {
   float:right;
   padding:10px;
+  font-size:20px;
+  margin-left:40px;
+}
+#noticebox {
+  float:right;
   font-size:20px;
 }
 .time {

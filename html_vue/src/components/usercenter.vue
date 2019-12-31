@@ -56,6 +56,7 @@ export default {
         message: '登出成功',
         type: 'success'
       })
+      this.$socket.close()
       this.$router.push('/')
     }
   },
