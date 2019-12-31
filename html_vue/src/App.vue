@@ -32,7 +32,7 @@
                       </el-table-column>
                 </el-table>
               </el-popover>
-            <el-badge :value="notices" class="item" id="noticebox" style="padding: 0;margin: 10px;" :hidden="noticeflag">
+            <el-badge :value="notices" class="item" id="noticebox" style="padding: 0;margin: 20px;" :hidden="noticeflag">
               <div class="box" style="cursor: pointer" v-popover:popover><i class="el-icon-bell" id="notice"></i></div>
             </el-badge>
             <el-drawer
@@ -222,6 +222,7 @@ export default {
 #noticebox {
   float:right;
   font-size:20px;
+  margin:10px;
 }
 .time {
   float:right;

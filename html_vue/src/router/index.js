@@ -25,11 +25,6 @@ const router = new Router({
       component: Index,
       children: [
         {
-          path: '/index/task',
-          name: 'Task',
-          component: Task
-        },
-        {
           path: '/index/createorder',
           name: 'createorder',
           component: createorder

@@ -25,7 +25,7 @@ Vue.use(ElementUI)
 // 将axios绑定
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
-axios.defaults.baseURL = 'api/'
+axios.defaults.baseURL = '/api/'
 
 /* eslint-disable no-new */
 new Vue({

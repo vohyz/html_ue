@@ -87,25 +87,25 @@ export default {
     }
   },
   created () {
-    this.$axios.post('http://127.0.0.1:5001/task',
+    this.$axios.post('/task',
       {
         'task_id': this.task_id
       }
     )
       .then((response) => {
-          console.log(response.data)
-          this.task = response.data
-          this.chated = true
-          console.log(this.task.publisher)
-          this.$store.dispatch('setaimuser', this.task.publisher)
-        },
-        (response) => {
-          this.$message.error({
-            message: '网络连接失败',
-            showClose: true,
-            type: 'error'
-          })
-        }
+        console.log(response.data)
+        this.task = response.data
+        this.chated = true
+        console.log(this.task.publisher)
+        this.$store.dispatch('setaimuser', this.task.publisher)
+      },
+      (response) => {
+        this.$message.error({
+          message: '网络连接失败',
+          showClose: true,
+          type: 'error'
+        })
+      }
       )
   },
   beforeMount () {

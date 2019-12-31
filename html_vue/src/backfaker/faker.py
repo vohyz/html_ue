@@ -26,15 +26,15 @@ class Register(Resource):
 class Login(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name', type=str)
-        self.parser.add_argument('pass', type=str)
+        self.parser.add_argument('user_name', type=str)
+        self.parser.add_argument('user_password', type=str)
 
     def post(self):
         data = self.parser.parse_args()
         
         print(data)
         # rst = self.create(params)
-        return {'rst': data['name']}
+        return {'rst': data['user_name']}
 
 class Order(Resource):
     def __init__(self):
@@ -43,7 +43,7 @@ class Order(Resource):
         self.parser.add_argument('user_id', type=str)
         self.parser.add_argument('order_type', type=str)
 
-    def get(self):
+    def post(self):
         data = self.parser.parse_args()
         print(data)
         n = 0
@@ -85,11 +85,6 @@ class Order(Resource):
         # rst = self.create(params)
         return params
 
-    def post(self):
-        data = self.parser.parse_args()
-        print(data)
-        # rst = self.create(params)
-        return {'rst': 'ok'}
 class Task(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
@@ -124,4 +119,4 @@ api.add_resource(Order, '/order')
 api.add_resource(Task, '/task')
 
 if __name__ == '__main__':
-    app.run(debug=True, port= 5001)
+    app.run(debug=True, port= 9000)

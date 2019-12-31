@@ -136,7 +136,7 @@ export default {
     gotoDetails (id) {
       this.$axios.post('/task/history', {
         'taskId': this.taskList.id,
-        'userId':localStorage.getItem('userName')
+        'userId': localStorage.getItem('userName')
       }).then((response) => {
         console.log(response.data)
       })

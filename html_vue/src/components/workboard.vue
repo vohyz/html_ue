@@ -27,13 +27,11 @@ export default {
   watch: {
     type: function (thenew, theold) {
       // post可以直接发参数，get必须用params打包
-      this.$axios.get('http://127.0.0.1:5001/order',
+      this.$axios.post('/order',
         {
-          params: {
-            'order_id': '1',
-            'user_id': '1',
-            'order_type': this.$route.query.type
-          }
+          'order_id': '1',
+          'user_id': '1',
+          'order_type': this.$route.query.type
         }
       )
         .then((response) => {
@@ -58,13 +56,11 @@ export default {
     }
   },
   mounted () {
-    this.$axios.get('http://127.0.0.1:5001/order',
+    this.$axios.post('/order',
       {
-        params: {
-          'order_id': '1',
-          'user_id': '1',
-          'order_type': this.$route.query.type
-        }
+        'order_id': '1',
+        'user_id': '1',
+        'order_type': this.$route.query.type
       }
     )
       .then((response) => {
