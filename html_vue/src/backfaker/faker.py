@@ -50,24 +50,24 @@ class Order(Resource):
         price = '1'
         if data['order_type'] == 'publiced':
             n = 4
-            price = '已发布'
-            a = '小明'
-            b = '小红'
+            price = 'publiced'
+            a = 'ming'
+            b = 'hong'
         elif data['order_type'] == 'caogao':
             n = 2
-            price = '草稿箱'
-            a = '小明'
-            b = '小红'
+            price = 'caogaoxiang'
+            a = 'ming'
+            b = 'hong'
         elif data['order_type'] == 'ing':
             n = 5
-            price = '进行中'
-            a = '小红'
-            b = '小明'
+            price = 'ing'
+            a = 'hong'
+            b = 'ming'
         elif data['order_type'] == 'achieved':
             n = 6
-            price = '已完成'
-            a = '小红'
-            b = '小明'
+            price = 'achieved'
+            a = 'hong'
+            b = 'ming'
         params = {
             'code': 200,
             'message': 'success',
