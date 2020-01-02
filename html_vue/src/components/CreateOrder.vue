@@ -19,6 +19,8 @@
       </el-form-item>
       <el-form-item label="标签" prop="tags">
         <el-cascader
+          ref="cascaderAddr"
+          v-model="ruleForm.tags"
           :options="options"
           :props="props"
           :show-all-levels="false"
@@ -104,7 +106,8 @@ export default {
         name: '',
         introduce: '',
         price: '',
-        sex: '',
+        tags: '',
+        time: '',
         frequency: ''
       },
       rules: {
@@ -215,25 +218,33 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post('/register',
+          let nodes = this.$refs['cascaderAddr'].getCheckedNodes(true)
+          let i = 0
+          let tags = []
+          for (; i < nodes.length; i++) {
+            tags.push(nodes[i].pathLabels)
+          }
+          console.log(tags)
+          this.$axios.post('/task',
             {
-              'name': this.ruleForm.name,
-              'pass': this.ruleForm.pass,
-              'checkPass': this.ruleForm.checkPass,
-              'age': this.ruleForm.age,
-              'sex': this.ruleForm.sex
+              'user_name': localStorage.getItem('User'),
+              'task_title': this.ruleForm.name,
+              'task_info': this.ruleForm.introduce,
+              'task_bonus': this.ruleForm.price,
+              'end_time': window.JSON.stringify(this.ruleForm.time),
+              'task_tags': window.JSON.stringify(tags)
             }
           )
             .then((response) => {
               this.$message.success({
-                message: '提交成功',
+                message: '创建成功',
                 showClose: true,
                 type: 'success'
               })
             },
             (response) => {
               this.$message.error({
-                message: '注册失败',
+                message: '创建失败',
                 showClose: true,
                 type: 'error'
               })
