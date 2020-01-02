@@ -218,9 +218,9 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post('/register',
+          this.$axios.post('/api/task/publishTask',
             {
-              'name': this.ruleForm.name,
+              'user_name': this.ruleForm.name,
               'pass': this.ruleForm.pass,
               'checkPass': this.ruleForm.checkPass,
               'age': this.ruleForm.age,

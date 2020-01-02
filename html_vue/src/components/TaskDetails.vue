@@ -3,24 +3,24 @@
       <div class="Task">
         <el-card class="box-card">
           <div>
-            <el-col :span="8"><span style="font-size: 20px;font-weight: 600;float: right;">{{task.title}}</span></el-col>
+            <el-col :span="8"><span style="font-size: 20px;font-weight: 600;float: right;">{{task[0].title}}</span></el-col>
             <el-col :span="8">
               <span style="font-size: 20px;font-weight: 600;float: right;">元</span>
-              <span style="font-size: 26px;font-weight: 600;color: red;float: right;">{{task.bonus}}</span>
+              <span style="font-size: 26px;font-weight: 600;color: red;float: right;">{{task[0].bonus}}</span>
               <span style="font-size: 20px;font-weight: 600;float: right;">悬赏金：</span>
             </el-col>
             <el-col :span="8" style="margin-bottom:10px;">
-              <el-button style="float: right; padding: 3px 0;font-size: 20px;font-weight: 600" type="success" plain>认领</el-button>
+              <el-button style="float: right; padding: 3px 0;font-size: 20px;font-weight: 600" @click="receiveTask" type="success" plain>认领</el-button>
             </el-col>
             <hr style="width:100%;">
             <el-col :span="8"><span style="font-size: 18px;font-weight: 400;float: right;line-height:30px;">标签：</span></el-col>
             <el-col :span="10">
-              <el-tag v-for="tag in task.tags" :key="tag"  style="float: left;margin-right:5px;">{{tag}}</el-tag>
+              <el-tag style="float: left;margin-right:5px;">{{task[0].tags}}</el-tag>
             </el-col>
             <el-col :span="6">
             </el-col>
             <el-col :span="24" style="text-indent: 2em;width:100%;margin-top:20px;margin-bottom:20px;">
-              {{task.info}}
+              {{task[0].info}}
             </el-col>
             <div >
               <div class="allmap" id="allmap" style="height:300px;">
@@ -33,17 +33,17 @@
         <div class="userInfo" style="padding: 20px;width: 357px;">
           <div class="avatar" style="width: auto;float: left">
             <div class="picture">
-              <el-avatar fit="fill" :size="90" src="../static/avatar.jpg"></el-avatar>
+              <el-avatar fit="fill" :size="90" :src="userAvatar"></el-avatar>
               <div class="status"></div>
             </div>
           </div>
           <div class="name">
-            <span style="font-size: x-large;font-weight: 500">{{task.publisher}}</span><br>
+            <span style="font-size: x-large;font-weight: 500">{{task[0].publisher}}</span><br>
             <span style="font-size: small;color: #72767b;font-style:oblique">最近登录: 2小时前</span>
           </div>
         </div>
         <div class="chatView" style="height: 300px;width: 400px;">
-          <chat v-if="chated" :aim_user="task.publisher"></chat>
+          <chat v-if="chated" :aim_user="task[0].publisher"></chat>
         </div>
       </div>
     </div>
@@ -57,7 +57,9 @@ export default {
     return {
       task: {},
       src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
-      chated: false
+      chated: false,
+      userId: '',
+      userAvatar: ''
     }
   },
   components: {
@@ -68,6 +70,55 @@ export default {
       return this.$route.params.id
     }
   },
+  // created () {
+  //   this.$axios.post('/api/task/findTaskondetail',
+  //     {
+  //       'task_id': this.task_id
+  //     }
+  //   )
+  //     .then((response) => {
+  //       // console.log(response.data)
+  //       this.task = response.data.published
+  //       this.chated = true
+  //       console.log(this.task.publisher)
+  //       this.$store.dispatch('setaimuser', this.task.publisher)
+  //     })
+  //       .catch((error) => {
+  //         console.log(error)
+  //       })
+  //     // (response) => {
+  //     //   this.$message.error({
+  //     //     message: '网络连接失败',
+  //     //     showClose: true,
+  //     //     type: 'error'
+  //     //   })
+  //     // }
+  //     // )
+  // },
+  beforeMount () {
+    // 获取任务信息
+    this.$axios.post('/api/task/findTaskondetail',
+      {
+        'task_id': this.task_id
+      }).then((response) => {
+      this.task = response.data.published
+      console.log(this.task)
+    })
+      .catch((error) => {
+        console.log(error)
+      })
+    // 获取发布者信息
+    this.$axios.post('/api/getUserInfo',
+      {
+        'user_name': this.task.publisher
+      }).then((response) => {
+      this.userId = response.data.user_Id
+      this.userAvatar = response.data.user_avatar
+    })
+      .catch((error) => {
+        console.log(error)
+      })
+  },
   methods: {
     getDetails (id) {
       this.$router.push({
@@ -75,9 +126,9 @@ export default {
       })
     },
     receiveTask () {
-      this.$axios.post('/getTask', {
-        'taskId': this.task.id,
-        'userName': this.user.userName
+      this.$axios.post('/api/task/receiveTask', {
+        'task_id': this.task_id,
+        'user_name': localStorage.getItem('UserName')
       }).then((response) => {
         console.log(response)
       })
@@ -85,48 +136,6 @@ export default {
           console.log(error)
         })
     }
-  },
-  created () {
-    this.$axios.post('/task',
-      {
-        'task_id': this.task_id
-      }
-    )
-      .then((response) => {
-        console.log(response.data)
-        this.task = response.data
-        this.chated = true
-        console.log(this.task.publisher)
-        this.$store.dispatch('setaimuser', this.task.publisher)
-      },
-      (response) => {
-        this.$message.error({
-          message: '网络连接失败',
-          showClose: true,
-          type: 'error'
-        })
-      }
-      )
-  },
-  beforeMount () {
-    // 获取任务信息
-    this.$axios.get('/task/getById', {
-      params: {'id': this.task_id}
-    }).then((response) => {
-      this.task = response.data.thistask
-    })
-      .catch((error) => {
-        console.log(error)
-      })
-    // 获取发布者信息
-    this.$axios.get('/getuserinfo', {
-      params: {'username': this.task.publisher}
-    }).then((response) => {
-      this.user = response.data.userinfo
-    })
-      .catch((error) => {
-        console.log(error)
-      })
   }
 }
 </script>
@@ -175,19 +184,5 @@ export default {
     margin-top: 16px;
     margin-left: 20px;
     text-align: left;
-  }
-  .text {
-    font-size: 16px;
-  }
-  .item {
-    margin-bottom: 18px;
-  }
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-  .clearfix:after {
-    clear: both
   }
 </style>

@@ -12,7 +12,7 @@
             <label style="cursor: pointer;color: black">生活日常</label>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="1-1">跑腿</el-menu-item>
+            <el-menu-item index="1-1" @click="chooseModule('跑腿')">跑腿</el-menu-item>
             <el-menu-item index="1-2">代购</el-menu-item>
           </el-menu-item-group>
             <el-menu-item index="1-3">兼职</el-menu-item>
@@ -67,9 +67,9 @@
                   </p>
                   <div class="datetime" style="padding-top: 3%;padding-left: 3%">
                     <i class="el-icon-date" style="float: left"></i>
-                    <span style="float: left">{{task.begintime}}</span>
+                    <span style="float: left">{{task.beginTime}}</span>
                     <span style="float: left;padding-left: 2%;padding-right: 2%">-</span>
-                    <span style="float: left">{{task.endtime}}</span>
+                    <span style="float: left">{{task.endTime}}</span>
                   </div>
                 </div>
                 <div class="publisher">
@@ -88,8 +88,11 @@
       <div class="avatar" style="margin-top: 10px">
         <el-avatar :size="95" shape="square" fit="fill" :src="userInfo.avatar"></el-avatar><br>
       </div>
-      <div class="name" style="margin-top: 20px">
+      <div class="name" v-if="userInfo.userName!=null" style="margin-top: 20px">
         <span style="font-size: x-large">hi! {{userInfo.userName}}</span>
+      </div>
+      <div class="name" v-else style="margin-top: 20px">
+        <span style="font-size: x-large">logout</span>
       </div>
       <div class="calendar" style="margin-top: 10px">
         <el-calendar v-model="value">
@@ -100,43 +103,50 @@
 </template>
 
 <script type="text/javascript">
+// import dayjs from '../../../node_modules/dayjs'
 export default {
   name: 'Index',
   mounted () {
     // 事件监听滚动条
     window.addEventListener('scroll', this.watchScroll)
   },
-  created () {
-    // let id  = localStorage.getItem('userId')
-    // this.getUser(id)
-  },
+  // created () {
+  // },
+  // filters: {
+  //   formatDate: function (value) {
+  //     if (value === '') {
+  //       return ''
+  //     }
+  //     let time = dayjs(value).format('YYYY-MM-DD HH:MM:SS')
+  //     return time
+  //   }
+  // },
   methods: {
     handleOpen (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleClose (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClick (tab, event) {
-      console.log(tab, event)
-    },
-    handleChange (val) {
-      console.log(val)
+      // console.log(key, keyPath)
     },
     chooseModule (moduleName) {
-      this.$axios.get('/module', {
-        params: {tags: moduleName}
-      }).then((response) => {
-        this.taskList = response.data.tasklist
+      this.$axios.post('/api/task/findTaskByTags',
+        {
+          tags: moduleName
+        }).then((response) => {
+        if (response.data.Status === 'right') {
+          this.taskList = response.data.task_omitinfo
+        } else {
+          alert(response.data.Details)
+        }
       })
         .catch((error) => {
           console.log(error)
         })
     },
     gotoDetails (id) {
-      this.$axios.post('/task/history', {
-        'taskId': this.taskList.id,
-        'userId': localStorage.getItem('userName')
+      this.$axios.post('/addHistory', {
+        'task_id': id,
+        'user_name': localStorage.getItem('UserName')
       }).then((response) => {
         console.log(response.data)
       })

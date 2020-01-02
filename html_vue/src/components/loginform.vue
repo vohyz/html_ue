@@ -56,20 +56,27 @@ export default {
             }
           )
             .then((response) => {
-              if (response.data.rst) {
+              if (response.data.status === 'right') {
                 // 设置Vuex登录标志为true，默认userLogin为false
                 this.$store.dispatch('userLogin', true)
                 // Vuex在用户刷新的时候userLogin会回到默认值false，所以我们需要用到HTML5储存
                 // 我们设置一个名为Flag，值为isLogin的字段，作用是如果Flag有值且为isLogin的时候，证明用户已经登录了。
                 localStorage.setItem('Flag', 'isLogin')
-                localStorage.setItem('User', response.data.rst)
+                localStorage.setItem('User', response.data.user_id)
+                localStorage.setItem('UserName', this.ruleForm.name)
                 this.$message.success({
                   message: '登录成功',
                   showClose: true,
                   type: 'success'
                 })
                 // 登录成功后跳转到指定页面
-                this.$router.push('/')
+                this.$router.push('/index')
+              } else {
+                this.$message.error({
+                  message: '用户名或密码错误',
+                  showClose: true,
+                  type: 'error'
+                })
               }
             },
             (response) => {

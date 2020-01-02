@@ -26,26 +26,60 @@ export default {
   },
   watch: {
     type: function (thenew, theold) {
-      // post可以直接发参数，get必须用params打包
-      this.$axios.post('/order',
-        {
-          'order_id': '1',
-          'user_id': '1',
-          'order_type': this.$route.query.type
-        }
-      )
-        .then((response) => {
-          console.log(response.data.message)
-          this.works = response.data.works
-        },
-        (response) => {
-          this.$message.error({
-            message: '网络连接失败',
-            showClose: true,
-            type: 'error'
-          })
-        }
+      if (thenew === 'caogao') {
+        this.$axios.post('/api/getUserDrafts',
+          {
+            'user_name': localStorage.getItem('UserName')
+          }
+          // {headers: {'Content-Type': 'multipart/form-data'}}
         )
+          .then((response) => {
+            if (response.data.status === 'right') {
+              this.works = response.data.List
+            } else {
+              this.$message.error({
+                message: '没有发布的任务',
+                showClose: true,
+                type: 'error'
+              })
+            }
+          },
+          (response) => {
+            this.$message.error({
+              message: '网络连接失败',
+              showClose: true,
+              type: 'error'
+            })
+          }
+          )
+      } else { // post可以直接发参数，get必须用params打包
+        alert(thenew)
+        this.$axios.post('/api/task/publishedTask',
+          {
+            'user_name': localStorage.getItem('UserName'),
+            'type': thenew
+          }
+        )
+          .then((response) => {
+            if (response.data.status === 'right') {
+              this.works = response.data.tasks
+            } else {
+              this.$message.error({
+                message: '没有发布的任务',
+                showClose: true,
+                type: 'error'
+              })
+            }
+          },
+          (response) => {
+            this.$message.error({
+              message: '网络连接失败',
+              showClose: true,
+              type: 'error'
+            })
+          }
+          )
+      }
     }
   },
   methods: {
@@ -56,11 +90,10 @@ export default {
     }
   },
   mounted () {
-    this.$axios.post('/order',
+    this.$axios.post('/api/task/publishedTask',
       {
-        'order_id': '1',
-        'user_id': '1',
-        'order_type': this.$route.query.type
+        'user_name': localStorage.getItem('UserName'),
+        'type': 'published'
       }
     )
       .then((response) => {

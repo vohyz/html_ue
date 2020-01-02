@@ -13,7 +13,7 @@
             <span>我的需求</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/usercenter/workboard?type=publiced">已发布</el-menu-item>
+            <el-menu-item index="/usercenter/workboard?type=published">已发布</el-menu-item>
             <el-menu-item index="/usercenter/workboard?type=caogao">草稿箱</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
@@ -24,7 +24,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="/usercenter/workboard?type=ing">进行中</el-menu-item>
-            <el-menu-item index="/usercenter/workboard?type=achieved">已完成</el-menu-item>
+            <el-menu-item index="/usercenter/workboard?type=ed">已完成</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-menu-item index="/usercenter/createorder">
@@ -56,7 +56,12 @@ export default {
         message: '登出成功',
         type: 'success'
       })
-      this.$router.push('/')
+      localStorage.removeItem('User')
+      localStorage.removeItem('UserName')
+      localStorage.removeItem('userType')
+      localStorage.removeItem('userId')
+      localStorage.removeItem('userAvatarLink')
+      this.$router.push('/index')
     }
   },
   data () {
