@@ -2,7 +2,15 @@
   <div class="container">
     <div class="leftmenu">
         <div class="block">
-            <el-image class="userimg" :src="src"></el-image>
+            <el-upload
+              class="avatar-uploader"
+              action="/api/login"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="src" :src="src" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
             <p><span class="demonstration">{{user_id}}</span></p>
             <el-button :plain="true" @click="logout">登出</el-button>
         </div>
@@ -58,12 +66,36 @@ export default {
       })
       this.$socket.close()
       this.$router.push('/')
+    },
+    handleAvatarSuccess (res, file) {
+      this.src = URL.createObjectURL(file.raw)
+      this.$socket.emit('my_avatar', localStorage.getItem('User_avatar'))
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = function (e) {
+        let imgFile = e.target.result
+        let arr = imgFile.split(',')
+        this.n64 = arr[1]
+        localStorage.setItem('User_avatar', arr[1])
+      }
+      return isJPG && isLt2M
     }
   },
   data () {
     return {
       src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
-      user_id: ''
+      user_id: '',
+      n64: ''
     }
   },
   mounted () {
@@ -73,6 +105,29 @@ export default {
 </script>
 
 <style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 110px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+.avatar {
+  width: 110px;
+  height: 100px;
+  display: block;
+}
 .container {
   width: 80%;
   min-width:1005px;

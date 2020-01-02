@@ -139,6 +139,14 @@ export default {
       }
     },
     handleClose (done) {
+      let i = 0
+      for (; i < this.gridData.length;) {
+        if (this.gridData[i].name === this.aim_user) {
+          this.gridData.splice(i, 1)
+        } else {
+          i += 1
+        }
+      }
       this.chated = false
       this.drawer = false
       this.$socket.emit('my_aim', this.user + ' ' + this.$store.state.aim_user)

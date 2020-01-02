@@ -35,6 +35,11 @@ class MyCustomNamespace(Namespace):
         self.nametable[sid] = data
         # self.pool[self.user_id] = (self.sid, self)
 
+    def on_my_avatar(self, data):
+        sid = request.sid
+        print(data)
+        setavatar(self.nametable[sid], data)
+
     def on_my_aim(self, data):      # 打开了对某人的对话框
 
         ids = data.split()          # 此处修改一下前端，不需要发送者的id了
@@ -44,6 +49,7 @@ class MyCustomNamespace(Namespace):
         for i in his:
             res.append(list(map(str, i)))
         emit('server_history', res, room=self.pool[ids[0]].sid)
+        emit('server_avatar', getavatar(ids[0]), room=self.pool[ids[0]].sid)
 
     def on_message(self, data):     # 发送消息
         sid = request.sid
@@ -100,6 +106,35 @@ def findhistory(user_id, aim):
         cursor.close()
         conn.close()
         return list(result)
+    except Exception as e:
+        print(e)
+        return 'error'
+
+def setavatar(user_id, data):
+    try:
+        conn,cursor = connect_mysql()           # 连接到mysql
+        sql = 'UPDATE User SET user_avatar=\"%s\" WHERE `user_id`=\"%s\"'%(data, user_id)
+        cursor.execute(sql) 
+        #print(result)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return 'ok'
+    except Exception as e:
+        print(e)
+        return 'error'
+
+def getavatar(user_id):
+    try:
+        conn,cursor = connect_mysql()           # 连接到mysql
+        sql = 'SELECT user_avatar FROM User WHERE `user_id`=\"%s\"'%(user_id)
+        cursor.execute(sql) 
+        result = cursor.fetchone()
+        #print(result)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return result
     except Exception as e:
         print(e)
         return 'error'
