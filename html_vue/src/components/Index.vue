@@ -5,7 +5,11 @@
         <el-radio-button :label="false">展开</el-radio-button>
         <el-radio-button :label="true" >收起</el-radio-button>
       </el-radio-group>
-      <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+      <el-menu default-active="0" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+        <el-menu-item index="0" @click="Init">
+          <i class="el-icon-time"></i>
+          <label style="cursor: pointer">最新发布</label>
+        </el-menu-item>
         <el-submenu index="1">
           <template slot="title">
             <i class="el-icon-s-help"></i>
@@ -65,15 +69,15 @@
                   </p>
                   <div class="datetime" style="padding-top: 3%;padding-left: 3%">
                     <i class="el-icon-date" style="float: left"></i>
-                    <span style="float: left">{{task.beginTime}}</span>
+                    <span style="float: left">{{task.beginTime | formatDate}}</span>
                     <span style="float: left;padding-left: 2%;padding-right: 2%">-</span>
-                    <span style="float: left">{{task.endTime}}</span>
+                    <span style="float: left">{{task.endTime | formatDate}}</span>
                   </div>
                 </div>
                 <div class="publisher">
                   <p>
                     发布者: {{task.publisher}}<br>
-                    发布时间: {{task.publishtime}}
+                    发布时间: {{task.publishtime | formatDate}}
                   </p>
                 </div>
               </div>
@@ -87,7 +91,7 @@
     </div>
     <div class="rightModule">
       <div class="avatar" style="margin-top: 10px;text-align: center">
-        <el-avatar :size="95" shape="square" fit="fill" :src="userInfo.avatar"></el-avatar><br>
+        <el-avatar :size="95" shape="square" :src="userInfo.avatar"></el-avatar><br>
       </div>
       <div class="name" v-if="userInfo.userName!=null" style="margin-top: 20px">
         <span style="font-size: x-large">hi! {{userInfo.userName}}</span>
@@ -106,9 +110,32 @@
 <script type="text/javascript">
 export default {
   name: 'Index',
+  filters: {
+    formatDate: function (value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? ('0' + MM) : MM
+      let d = date.getDate()
+      d = d < 10 ? ('0' + d) : d
+      let h = date.getHours()
+      h = h < 10 ? ('0' + h) : h
+      let m = date.getMinutes()
+      m = m < 10 ? ('0' + m) : m
+      let s = date.getSeconds()
+      s = s < 10 ? ('0' + s) : s
+      return y + '/' + MM + '/' + d + ' ' + h + ':' + m + ':' + s
+    }
+  },
   mounted () {
     // 事件监听滚动条
     window.addEventListener('scroll', this.watchScroll)
+    this.$axios.post('/api/task/latest').then((response) => {
+      this.taskList = response.data.latest
+    })
+      .catch((error) => {
+        console.log(error)
+      })
   },
   methods: {
     handleOpen (key, keyPath) {
@@ -133,6 +160,7 @@ export default {
         })
     },
     gotoDetails (id) {
+      let type = 'published'
       this.$axios.post('/addHistory', {
         'task_id': id,
         'user_name': localStorage.getItem('UserName')
@@ -143,14 +171,12 @@ export default {
           console.log(error)
         })
       this.$router.push({
-        path: `/taskdetails/${id}`
+        path: `/taskdetails/${type}/${id}`
       })
     },
-    getUser (name) {
-      this.$axios.get('/getUser', {
-        params: {'userName': name}
-      }).then((response) => {
-        this.userInfo = response.data.userlist
+    Init () {
+      this.$axios.post('/api/task/latest').then((response) => {
+        this.taskList = response.data.latest
       })
         .catch((error) => {
           console.log(error)
@@ -163,7 +189,7 @@ export default {
       isCollapse: true,
       activeName: 'first',
       taskList: [],
-      userInfo: {'userName': localStorage.getItem('UserName'), 'avatar': localStorage.getItem('userAvatarLink'), 'userId': localStorage.getItem('User')}
+      userInfo: {'userName': localStorage.getItem('UserName'), 'avatar': 'data:image/jpeg;base64,' + localStorage.getItem('User_avatar'), 'userId': localStorage.getItem('User')}
     }
   }
 }

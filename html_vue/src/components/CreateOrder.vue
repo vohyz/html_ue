@@ -47,10 +47,9 @@
         </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+        <el-button type="primary" @click="storeForm('ruleForm')">保存</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
-        <router-link to="/index">
-          <el-button>返回</el-button>
-        </router-link>
+          <el-button @click="ret">返回</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -90,20 +89,6 @@ export default {
         callback()
       }
     }
-    var checksex = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请选择性别'))
-      } else {
-        callback()
-      }
-    }
-    var checkfrequency = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请选择频率'))
-      } else {
-        callback()
-      }
-    }
     return {
       ruleForm: {
         name: '',
@@ -122,12 +107,6 @@ export default {
         ],
         price: [
           { validator: checkPrice, trigger: 'blur' }
-        ],
-        sex: [
-          { validator: checksex, trigger: 'change' }
-        ],
-        frequency: [
-          { validator: checkfrequency, trigger: 'blur' }
         ]
       },
       pickerOptions: {
@@ -206,6 +185,33 @@ export default {
       }]
     }
   },
+  mounted () {
+    if (this.$route.params.type === 'get') {
+      this.$axios.post('/api/getDraftinfo',
+        {
+          'task_id': this.$route.params.id
+        }
+        // {headers: {'Content-Type': 'multipart/form-data'}}
+      )
+        .then((response) => {
+          if (response.data.status === 'right') {
+            let task = response.data.List
+            this.ruleForm.name = task.title
+            this.ruleForm.introduce = task.info
+            this.ruleForm.price = task.bonus
+            this.ruleForm.tags = task.tags
+          }
+        },
+        (response) => {
+          this.$message.error({
+            message: '网络连接失败',
+            showClose: true,
+            type: 'error'
+          })
+        }
+        )
+    }
+  },
   methods: {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
@@ -216,7 +222,6 @@ export default {
           for (i = 0; i < nodes.length; i++) {
             tags.push(nodes[i].pathLabels.pop())
           }
-          console.log(tags)
           let userName = localStorage.getItem('UserName')
           if (userName != null) {
             this.$axios.post('/api/task/publishTask',
@@ -244,6 +249,7 @@ export default {
                   showClose: true,
                   type: 'success'
                 })
+                this.$router.go(-1)
               },
               (response) => {
                 this.$message.error({
@@ -265,8 +271,66 @@ export default {
         }
       })
     },
+    storeForm (formName) {
+      let data = {
+        'user_name': localStorage.getItem('UserName'),
+        'task_title': this.ruleForm.name,
+        'task_info': this.ruleForm.introduce,
+        'task_bonus': this.ruleForm.price,
+        'begin_time': '"1000-01-01T00:00:00.000C"',
+        'end_time': '"1000-01-01T00:00:00.000C"',
+        'task_type': ''
+      }
+      if (this.$route.params.type === 'get') {
+        data['task_id'] = this.$route.params.id
+        this.$axios.post('/api/modifyDrafts', data)
+          .then((response) => {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true,
+              type: 'success'
+            })
+            this.$router.go(-1)
+          },
+          (response) => {
+            this.$message.error({
+              message: '保存失败',
+              showClose: true,
+              type: 'error'
+            })
+          })
+      } else {
+        this.$axios.post('/api/task/publishTask', data)
+          .then((response) => {
+            let currentTime = response.data.currentTimes
+            this.$axios.post('/api/createDrafts',
+              {
+                'user_name': localStorage.getItem('UserName'),
+                'current_time': currentTime
+              }).then(response => {
+              console.log(response.data)
+            })
+            this.$message.success({
+              message: '创建成功',
+              showClose: true,
+              type: 'success'
+            })
+            this.$router.go(-1)
+          },
+          (response) => {
+            this.$message.error({
+              message: '创建失败',
+              showClose: true,
+              type: 'error'
+            })
+          })
+      }
+    },
     resetForm (formName) {
       this.$refs[formName].resetFields()
+    },
+    ret () {
+      this.$router.go(-1)
     }
   }
 }

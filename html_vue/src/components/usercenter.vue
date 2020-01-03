@@ -4,10 +4,11 @@
         <div class="block">
             <el-upload
               class="avatar-uploader"
-              action="/api/login"
+              action="/api/api/avatar"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
+              :before-upload="beforeAvatarUpload"
+              >
               <img v-if="src" :src="src" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
@@ -21,8 +22,10 @@
               <span>我的需求</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/usercenter/workboard?type=publiced">已发布</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=published">已发布</el-menu-item>
               <el-menu-item index="/usercenter/workboard?type=caogao">草稿箱</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=ing">进行中</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=ed">已完成</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
@@ -31,11 +34,10 @@
               <span>我的任务</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/usercenter/workboard?type=ing">进行中</el-menu-item>
-              <el-menu-item index="/usercenter/workboard?type=achieved">已完成</el-menu-item>
+              <el-menu-item index="/usercenter/workboard?type=exing">进行中</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-menu-item index="/usercenter/createorder">
+          <el-menu-item index="/usercenter/createorder/0/0">
             <i class="el-icon-menu"></i>
             <span slot="title">发布任务</span>
           </el-menu-item>
@@ -68,12 +70,12 @@ export default {
       localStorage.removeItem('UserName')
       localStorage.removeItem('userType')
       localStorage.removeItem('userId')
-      localStorage.removeItem('userAvatarLink')
+      localStorage.removeItem('User_avatar')
       this.$router.push('/index')
       this.$socket.close()
     },
     handleAvatarSuccess (res, file) {
-      this.src = URL.createObjectURL(file.raw)
+      this.src = 'data:image/jpeg;base64,' + localStorage.getItem('User_avatar')
       this.$socket.emit('my_avatar', localStorage.getItem('User_avatar'))
     },
     beforeAvatarUpload (file) {
@@ -98,13 +100,14 @@ export default {
   },
   data () {
     return {
-      src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
+      src: '',
       user_name: '',
       n64: ''
     }
   },
   mounted () {
     this.user_name = localStorage.getItem('UserName')
+    this.src = 'data:image/jpeg;base64,' + localStorage.getItem('User_avatar')
   }
 }
 </script>
@@ -129,7 +132,7 @@ export default {
   text-align: center;
 }
 .avatar {
-  width: 110px;
+  width: 100px;
   height: 100px;
   display: block;
 }

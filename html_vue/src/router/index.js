@@ -32,7 +32,7 @@ const router = new Router({
       ]
     },
     {
-      path: '/taskdetails/:id',
+      path: '/taskdetails/:type/:id',
       name: 'taskdetails',
       component: taskdetails
     },
@@ -63,7 +63,7 @@ const router = new Router({
           component: workboard
         },
         {
-          path: '/usercenter/createorder',
+          path: '/usercenter/createorder/:type/:id',
           name: 'createorder',
           component: createorder
         }

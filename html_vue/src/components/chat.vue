@@ -12,7 +12,8 @@
               <el-avatar :style="item.avastyle">{{item.user}}</el-avatar>
               <el-tag
                 :style="item.style"
-                effect="dark">
+                effect="dark"
+                color="#39bbb0">
                 {{ item.label }}
               </el-tag>
               <div style="clear:both;"></div>
@@ -49,9 +50,7 @@ export default {
       id: '',
       items: [],
       user: '',
-      board: [],
-      aim_avatar: 'data:image/jpeg;base64,',
-      my_avatar: ''
+      board: []
     }
   },
   sockets: {
@@ -69,13 +68,9 @@ export default {
       console.log('重新连接')
       this.$socket.emit('conect')
     },
-    server_avatar: function (data) {
-      this.aim_avatar = 'data:image/jpeg;base64,' + data
-      console.log('接收头像', this.aim_avatar)
-    },
     server_response: function (data) {
       console.log('接收数据', data)
-      this.items.push({label: data, user: this.aim_user, avastyle: {float: 'left', margin: '5px', height: '30px'}, style: {float: 'left', margin: '5px'}})
+      this.items.push({label: data, user: this.aim_user, avastyle: {'line-height': '30px', float: 'left', margin: '5px', 'background-color': '#00BCD4', width: '30px', height: '30px'}, style: {float: 'left', border: '0', margin: '5px'}})
     },
     send_message: function (data) {
       this.$socket.emit('message', data)
@@ -85,22 +80,21 @@ export default {
       let i = 0
       for (; i < data.length; i++) {
         if (data[i][2] === this.user) {
-          this.items.push({label: data[i][0], user: this.user, avastyle: {float: 'right', margin: '5px', height: '30px'}, style: {float: 'right', margin: '5px'}})
+          this.items.push({label: data[i][0], user: this.user, avastyle: {'line-height': '30px', float: 'right', margin: '5px', 'background-color': '#ffc107', width: '30px', height: '30px'}, style: {float: 'right', border: '0', margin: '5px'}})
         } else {
-          this.items.push({label: data[i][0], user: this.aim_user, avastyle: {float: 'left', margin: '5px', height: '30px'}, style: {float: 'left', margin: '5px'}})
+          this.items.push({label: data[i][0], user: this.aim_user, avastyle: {'line-height': '30px', float: 'left', margin: '5px', 'background-color': '#00BCD4', width: '30px', height: '30px'}, style: {float: 'left', border: '0', margin: '5px'}})
         }
       }
     }
   },
   created () {
-    this.user = localStorage.getItem('User')
-    this.my_avatar = 'data:image/jpeg;base64,' + localStorage.getItem('User_avatar')
+    this.user = localStorage.getItem('UserName')
   },
   methods: {
     send () {
       let data = this.message
       this.$socket.emit('message', data)
-      this.items.push({label: data, user: this.user, avastyle: {float: 'right', margin: '5px', height: '30px'}, style: {float: 'right', margin: '5px'}})
+      this.items.push({label: data, user: this.user, avastyle: {'line-height': '30px', float: 'right', margin: '5px', 'background-color': '#ffc107', width: '30px', height: '30px'}, style: {float: 'right', border: '0', margin: '5px'}})
     },
     scrollDown () {
       this.$refs['myScrollbar'].wrap.scrollTop = this.$refs['myScrollbar'].wrap.scrollHeight

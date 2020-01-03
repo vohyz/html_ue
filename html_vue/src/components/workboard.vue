@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-card shadow="hover" class="workcard" v-for="work in works" style="position:relative;" :key="work.title"  >
-      <div>{{work.title}}</div>
-      <button style="width:100%;height:100%;position:absolute;left:0;top:0;background: 0;border: 0;cursor: pointer" @click="getDetails(work.id)"></button>
-      <div style="float:left;">{{work.beinger}}</div>
-      <div style="float:right;">{{work.ender}}</div>
-      <div style="color:red">{{work.price}}</div>
+      <div>任务名：{{work.title}}</div>
+      <button style="width:100%;height:100%;position:absolute;left:0;top:0;background: 0;border: 0;cursor: pointer" v-if="flag" @click="getDetails(work.id, type)"></button>
+      <button style="width:100%;height:100%;position:absolute;left:0;top:0;background: 0;border: 0;cursor: pointer" v-if="!flag" @click="getDraftDetails(work.id,'get')"></button>
+      <div style="float:left;">创建人：{{work.publisher}}</div>
+      <div style="color:red">酬金：{{work.bonus}}</div>
     </el-card>
   </div>
 </template>
@@ -16,7 +16,8 @@ export default {
   data () {
     return {
       works: [],
-      src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg'
+      src: '',
+      flag: true // 不是草稿箱
     }
   },
   computed: {
@@ -36,6 +37,7 @@ export default {
           .then((response) => {
             if (response.data.status === 'right') {
               this.works = response.data.List
+              this.flag = false
             } else {
               this.$message.error({
                 message: '没有发布的任务',
@@ -52,8 +54,32 @@ export default {
             })
           }
           )
+      } else if (thenew === 'exing') {
+        this.$axios.post('/api/task/executeTask',
+          {
+            'user_name': localStorage.getItem('UserName')
+          }
+        )
+          .then((response) => {
+            if (response.data.status === 'right') {
+              this.works = response.data.tasking
+            } else {
+              this.$message.error({
+                message: '没有任务',
+                showClose: true,
+                type: 'error'
+              })
+            }
+          },
+          (response) => {
+            this.$message.error({
+              message: '网络连接失败',
+              showClose: true,
+              type: 'error'
+            })
+          }
+          )
       } else { // post可以直接发参数，get必须用params打包
-        alert(thenew)
         this.$axios.post('/api/task/publishedTask',
           {
             'user_name': localStorage.getItem('UserName'),
@@ -65,7 +91,7 @@ export default {
               this.works = response.data.tasks
             } else {
               this.$message.error({
-                message: '没有发布的任务',
+                message: '没有任务',
                 showClose: true,
                 type: 'error'
               })
@@ -83,9 +109,14 @@ export default {
     }
   },
   methods: {
-    getDetails (id) {
+    getDetails (id, type) {
       this.$router.push({
-        path: `/taskdetails/${id}`
+        path: `/taskdetails/${type}/${id}`
+      })
+    },
+    getDraftDetails (id, type) {
+      this.$router.push({
+        path: `/usercenter/createorder/${type}/${id}`
       })
     }
   },
@@ -93,12 +124,12 @@ export default {
     this.$axios.post('/api/task/publishedTask',
       {
         'user_name': localStorage.getItem('UserName'),
-        'type': 'published'
+        'type': this.type
       }
     )
       .then((response) => {
         console.log(response.data.message)
-        this.works = response.data.works
+        this.works = response.data.tasks
       },
       (response) => {
         this.$message.error({

@@ -86,7 +86,7 @@ def addmessage(idd, content, sender, receiver):
     try:
         conn,cursor = connect_mysql()           # 连接到mysql
         t = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        sql = 'INSERT INTO ChatMessage(content, `time`, sender, receiver) VALUES (\"%s\", \"%s\", %s, %s)'%(content, t, sender, receiver)
+        sql = 'INSERT INTO ChatMessage(content, `time`, sender, receiver) VALUES (\"%s\", \"%s\", \"%s\", \"%s\")'%(content, t, sender, receiver)
         cursor.execute(sql) 
         conn.commit()
         cursor.close()
@@ -113,7 +113,7 @@ def findhistory(user_id, aim):
 def setavatar(user_id, data):
     try:
         conn,cursor = connect_mysql()           # 连接到mysql
-        sql = 'UPDATE User SET user_avatar=\"%s\" WHERE `user_id`=\"%s\"'%(data, user_id)
+        sql = 'UPDATE User SET user_avatar=\"%s\" WHERE `user_name`=\"%s\"'%(data, user_id)
         cursor.execute(sql) 
         #print(result)
         conn.commit()
@@ -127,7 +127,7 @@ def setavatar(user_id, data):
 def getavatar(user_id):
     try:
         conn,cursor = connect_mysql()           # 连接到mysql
-        sql = 'SELECT user_avatar FROM User WHERE `user_id`=\"%s\"'%(user_id)
+        sql = 'SELECT user_avatar FROM User WHERE `user_name`=\"%s\"'%(user_id)
         cursor.execute(sql) 
         result = cursor.fetchone()
         #print(result)

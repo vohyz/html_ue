@@ -10,12 +10,13 @@
               <span style="font-size: 20px;font-weight: 600;float: right;">悬赏金：</span>
             </el-col>
             <el-col :span="8" style="margin-bottom:10px;">
-              <el-button style="float: right; padding: 3px 0;font-size: 20px;font-weight: 600" @click="receiveTask" type="success" plain>认领</el-button>
-            </el-col>
+              <el-button style="float: right; padding: 3px 0;font-size: 20px;font-weight: 600"  v-if="flag === 1" @click="receiveTask" type="success" plain>认领</el-button>
+              <el-button style="float: right; padding: 3px 0;font-size: 20px;font-weight: 600"  v-if="flag === 3" @click="finshTask" type="success" plain>确认完成</el-button>
+              </el-col>
             <hr style="width:100%;">
             <el-col :span="8"><span style="font-size: 18px;font-weight: 400;float: right;line-height:30px;">标签：</span></el-col>
             <el-col :span="10">
-              <el-tag style="float: left;margin-right:5px;">{{task.tags}}</el-tag>
+              <el-tag v-for="tag in task[0].tags.split(' ')" :key="tag"  style="float: left;margin-right:5px;">{{tag}}</el-tag>
             </el-col>
             <el-col :span="6">
             </el-col>
@@ -56,10 +57,12 @@ export default {
   data () {
     return {
       task: {},
-      src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
+      src: '',
       chated: false,
       userId: '',
-      userAvatar: ''
+      userAvatar: '',
+      flag: 0,
+      userflag: true
     }
   },
   components: {
@@ -68,6 +71,15 @@ export default {
   computed: {
     task_id () {
       return this.$route.params.id
+    },
+    task_type () {
+      if (this.$route.params.type === 'exing') {
+        this.userflag = false
+        return 'ing'
+      } else {
+        this.userflag = true
+        return this.$route.params.type
+      }
     }
   },
   beforeMount () {
@@ -76,30 +88,51 @@ export default {
       {
         'task_id': this.task_id
       }).then((response) => {
-      this.task = response.data.published
+      this.task = response.data[this.task_type]
+      if (this.task_type === 'ing') {
+        if (this.userflag) {
+          this.flag = 3
+        } else {
+          this.flag = 2
+          this.chated = true
+        }
+      } else {
+        if (localStorage.getItem('UserName') === this.task[0].publisher) {
+          this.flag = 2
+        } else {
+          this.flag = 1
+          this.chated = true
+          this.$store.dispatch('setaimuser', this.task[0].publisher)
+        }
+      }
       console.log(this.task)
-    })
-      .catch((error) => {
-        console.log(error)
+      // 获取发布者信息
+      this.$axios.post('/api/getUserInfo',
+        {
+          'user_name': this.task[0].publisher
+        }).then((response) => {
+        this.userId = response.data.user_Id
+        this.userAvatar = 'data:image/jpeg;base64,' + response.data.user_avatar
       })
-    // 获取发布者信息
-    this.$axios.post('/api/getUserInfo',
-      {
-        'user_name': this.task.publisher
-      }).then((response) => {
-      this.userId = response.data.user_Id
-      this.userAvatar = response.data.user_avatar
+        .catch((error) => {
+          this.$message.error({
+            message: '网络连接失败',
+            showClose: true,
+            type: 'error'
+          })
+          console.log(error)
+        })
     })
       .catch((error) => {
+        this.$message.error({
+          message: '网络连接失败',
+          showClose: true,
+          type: 'error'
+        })
         console.log(error)
       })
   },
   methods: {
-    getDetails (id) {
-      this.$router.push({
-        path: `/taskdetails/${id}`
-      })
-    },
     receiveTask () {
       let userName = localStorage.getItem('UserName')
       if (userName != null) {
@@ -108,6 +141,25 @@ export default {
           'user_name': userName
         }).then((response) => {
           console.log(response)
+          this.$message.success('领取成功')
+          this.$router.push('/index')
+        })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        this.$message.error('您还没有登录!请登录')
+      }
+    },
+    finshTask () {
+      let userName = localStorage.getItem('UserName')
+      if (userName != null) {
+        this.$axios.post('/api/task/completeTask', {
+          'task_id': this.task_id
+        }).then((response) => {
+          console.log(response)
+          this.$message.success('任务完成')
+          this.$router.push('/usercenter')
         })
           .catch((error) => {
             console.log(error)

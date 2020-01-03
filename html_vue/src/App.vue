@@ -111,7 +111,7 @@ export default {
       console.log('theold' + theold)
       console.log('thenew' + thenew)
       if (theold === false && thenew === true) {
-        let User = localStorage.getItem('User')
+        let User = localStorage.getItem('UserName')
         this.hellouseer = '欢迎 [' + User + '] 个人中心'
         this.loginlink = '/usercenter'
         this.$socket.connect()
@@ -153,7 +153,7 @@ export default {
     }
   },
   mounted () {
-    this.user = localStorage.getItem('User')
+    this.user = localStorage.getItem('UserName')
     this.timeNow = moment().utc().format('YYYY年MM月DD日') + ' ' + moment().utc().format('dddd')
     let islogin = this.$store.state.isLogin
     if (islogin === true) {

@@ -63,6 +63,7 @@ export default {
                 // 我们设置一个名为Flag，值为isLogin的字段，作用是如果Flag有值且为isLogin的时候，证明用户已经登录了。
                 localStorage.setItem('Flag', 'isLogin')
                 localStorage.setItem('User', response.data.user_id)
+                localStorage.setItem('User_avatar', response.data.user_avatar)
                 localStorage.setItem('UserName', this.ruleForm.name)
                 this.$message.success({
                   message: '登录成功',
