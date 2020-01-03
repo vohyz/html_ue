@@ -13,11 +13,11 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="chooseModule('跑腿')">跑腿</el-menu-item>
-            <el-menu-item index="1-2">代购</el-menu-item>
+            <el-menu-item index="1-2" @click="chooseModule('代购')">代购</el-menu-item>
           </el-menu-item-group>
-            <el-menu-item index="1-3">兼职</el-menu-item>
+            <el-menu-item index="1-3" @click="chooseModule('兼职')">兼职</el-menu-item>
         </el-submenu>
-        <el-menu-item index="2">
+        <el-menu-item index="2" @click="chooseModule('学习问答')">
           <i class="el-icon-edit"></i>
           <label style="cursor: pointer">学习问答</label>
         </el-menu-item>
@@ -27,18 +27,16 @@
             <label style="cursor: pointer;color: black">物品租赁</label>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="3-1">
-                体育用品
-            </el-menu-item>
-            <el-menu-item index="3-2">学习用品</el-menu-item>
+            <el-menu-item index="3-1" @click="chooseModule('体育用品')">体育用品</el-menu-item>
+            <el-menu-item index="3-2" @click="chooseModule('学习用品')">学习用品</el-menu-item>
+            <el-menu-item index="3-3" @click="chooseModule('生活用品')">生活用品</el-menu-item>
           </el-menu-item-group>
-          <el-menu-item index="3-3">生活用品</el-menu-item>
         </el-submenu>
-        <el-menu-item index="4">
+        <el-menu-item index="4" @click="chooseModule('娱乐游戏')">
           <i class="el-icon-headset"></i>
           <label style="cursor: pointer">娱乐游戏</label>
         </el-menu-item>
-        <el-menu-item index="5">
+        <el-menu-item index="5" @click="chooseModule('其他')">
           <i class="el-icon-guide"></i>
           <label style="cursor: pointer">其他</label>
         </el-menu-item>
@@ -56,7 +54,7 @@
             </router-link>
           </div>
         </div>
-        <div class="taskCard">
+        <div class="taskCard" v-if="taskList.length > 0">
           <el-col v-for="task in taskList" :key="task">
             <el-card class="cards" shadow="hover" style="cursor: pointer">
               <div class="taskinfo" @click="gotoDetails(task.id)">
@@ -82,10 +80,13 @@
             </el-card>
           </el-col>
         </div>
+        <div class="taskCard" v-if="taskList.length === 0">
+          <span style="color: orangered;font-size: large">该模块还没有已发布的任务</span>
+        </div>
       </div>
     </div>
     <div class="rightModule">
-      <div class="avatar" style="margin-top: 10px">
+      <div class="avatar" style="margin-top: 10px;text-align: center">
         <el-avatar :size="95" shape="square" fit="fill" :src="userInfo.avatar"></el-avatar><br>
       </div>
       <div class="name" v-if="userInfo.userName!=null" style="margin-top: 20px">
@@ -103,24 +104,12 @@
 </template>
 
 <script type="text/javascript">
-// import dayjs from '../../../node_modules/dayjs'
 export default {
   name: 'Index',
   mounted () {
     // 事件监听滚动条
     window.addEventListener('scroll', this.watchScroll)
   },
-  // created () {
-  // },
-  // filters: {
-  //   formatDate: function (value) {
-  //     if (value === '') {
-  //       return ''
-  //     }
-  //     let time = dayjs(value).format('YYYY-MM-DD HH:MM:SS')
-  //     return time
-  //   }
-  // },
   methods: {
     handleOpen (key, keyPath) {
       // console.log(key, keyPath)
@@ -173,9 +162,8 @@ export default {
       value: new Date(),
       isCollapse: true,
       activeName: 'first',
-      taskList: [{'id': 1, 'title': 'fs', 'bonus': '50', 'begintime': '2019-12-26', 'endtime': '2019-12-27', 'publisher': 'Leo', 'publishtime': '2019-12-26'},
-        {'id': 2, 'title': 'ie', 'bonus': '50', 'begintime': '2019-12-26', 'endtime': '2019-12-27', 'publisher': 'Leo', 'publishtime': '2019-12-26'}],
-      userInfo: {'userName': localStorage.getItem('User'), 'avatar': localStorage.getItem('userAvatarLink'), 'userId': localStorage.getItem('userId')}
+      taskList: [],
+      userInfo: {'userName': localStorage.getItem('UserName'), 'avatar': localStorage.getItem('userAvatarLink'), 'userId': localStorage.getItem('User')}
     }
   }
 }

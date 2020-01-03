@@ -15,7 +15,7 @@
             <hr style="width:100%;">
             <el-col :span="8"><span style="font-size: 18px;font-weight: 400;float: right;line-height:30px;">标签：</span></el-col>
             <el-col :span="10">
-              <el-tag style="float: left;margin-right:5px;">{{task[0].tags}}</el-tag>
+              <el-tag style="float: left;margin-right:5px;">{{task.tags}}</el-tag>
             </el-col>
             <el-col :span="6">
             </el-col>
@@ -70,31 +70,6 @@ export default {
       return this.$route.params.id
     }
   },
-  // created () {
-  //   this.$axios.post('/api/task/findTaskondetail',
-  //     {
-  //       'task_id': this.task_id
-  //     }
-  //   )
-  //     .then((response) => {
-  //       // console.log(response.data)
-  //       this.task = response.data.published
-  //       this.chated = true
-  //       console.log(this.task.publisher)
-  //       this.$store.dispatch('setaimuser', this.task.publisher)
-  //     })
-  //       .catch((error) => {
-  //         console.log(error)
-  //       })
-  //     // (response) => {
-  //     //   this.$message.error({
-  //     //     message: '网络连接失败',
-  //     //     showClose: true,
-  //     //     type: 'error'
-  //     //   })
-  //     // }
-  //     // )
-  // },
   beforeMount () {
     // 获取任务信息
     this.$axios.post('/api/task/findTaskondetail',
@@ -126,15 +101,20 @@ export default {
       })
     },
     receiveTask () {
-      this.$axios.post('/api/task/receiveTask', {
-        'task_id': this.task_id,
-        'user_name': localStorage.getItem('UserName')
-      }).then((response) => {
-        console.log(response)
-      })
-        .catch((error) => {
-          console.log(error)
+      let userName = localStorage.getItem('UserName')
+      if (userName != null) {
+        this.$axios.post('/api/task/receiveTask', {
+          'task_id': this.task_id,
+          'user_name': userName
+        }).then((response) => {
+          console.log(response)
         })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        this.$message.error('您还没有登录!请登录')
+      }
     }
   }
 }

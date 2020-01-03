@@ -5,7 +5,7 @@
         <div class="grid-content bg-purple-dark">
           <div class="headline">
             <!-- 路由跳转使用router-link比使用a要快很多很多 -->
-            <router-link to="/"><img class="logo" src="../static/LOGO.png"></router-link>
+            <router-link to="/index"><img class="logo" src="../static/LOGO.png"></router-link>
             <router-link :to="loginlink" class="el-link">{{hellouseer}}</router-link>
             <div class="time">{{timeNow}}</div>
             <div class="city"><i class="el-icon-location" id="location"></i>上海</div>
@@ -157,8 +157,8 @@ export default {
     this.timeNow = moment().utc().format('YYYY年MM月DD日') + ' ' + moment().utc().format('dddd')
     let islogin = this.$store.state.isLogin
     if (islogin === true) {
-      let User = localStorage.getItem('User')
-      this.hellouseer = '欢迎 [' + User + ']个人中心'
+      let User = localStorage.getItem('UserName')
+      this.hellouseer = '欢迎  ' + User + ' 个人中心'
       this.loginlink = '/usercenter'
     } else {
       this.hellouseer = '登录/注册'

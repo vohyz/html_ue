@@ -19,6 +19,8 @@
       </el-form-item>
       <el-form-item label="标签" prop="tags">
         <el-cascader
+          ref="cascaderAddr"
+          v-model="ruleForm.tags"
           :options="options"
           :props="props"
           :show-all-levels="false"
@@ -107,7 +109,8 @@ export default {
         name: '',
         introduce: '',
         price: '',
-        sex: '',
+        tags: '',
+        time: '',
         frequency: ''
       },
       rules: {
@@ -167,50 +170,39 @@ export default {
       props: { multiple: true },
       options: [{
         value: 1,
-        label: '娱乐',
+        label: '生活日常',
         children: [{
           value: 2,
-          label: '游戏',
-          children: [
-            { value: 3, label: '电脑游戏' },
-            { value: 4, label: '手机游戏' },
-            { value: 5, label: '线下游戏' }
-          ]
+          label: '跑腿'
         }, {
-          value: 7,
-          label: '运动',
-          children: [
-            { value: 8, label: '跑步' },
-            { value: 9, label: '健身' },
-            { value: 10, label: '远足' }
-          ]
+          value: 3,
+          label: '代购'
         }, {
-          value: 12,
-          label: '吃喝',
-          children: [
-            { value: 13, label: '火锅' },
-            { value: 14, label: '海底捞' },
-            { value: 15, label: '随便吃' }
-          ]
+          value: 4,
+          label: '兼职'
         }]
       }, {
-        value: 17,
-        label: '学习',
+        value: 5,
+        label: '学习问答'
+      }, {
+        value: 6,
+        label: '物品租赁',
         children: [{
-          value: 18,
-          label: '校内学习',
-          children: [
-            { value: 19, label: '图书馆' },
-            { value: 20, label: '自习室' }
-          ]
+          value: 7,
+          label: '体育用品'
         }, {
-          value: 21,
-          label: '校外学习',
-          children: [
-            { value: 22, label: '星巴克' },
-            { value: 23, label: '金拱门' }
-          ]
+          value: 8,
+          label: '学习用品'
+        }, {
+          value: 9,
+          label: '生活用品'
         }]
+      }, {
+        value: 10,
+        label: '娱乐游戏'
+      }, {
+        value: 11,
+        label: '其他'
       }]
     }
   },
@@ -218,30 +210,55 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post('/api/task/publishTask',
-            {
-              'user_name': this.ruleForm.name,
-              'pass': this.ruleForm.pass,
-              'checkPass': this.ruleForm.checkPass,
-              'age': this.ruleForm.age,
-              'sex': this.ruleForm.sex
-            }
-          )
-            .then((response) => {
-              this.$message.success({
-                message: '提交成功',
-                showClose: true,
-                type: 'success'
-              })
-            },
-            (response) => {
-              this.$message.error({
-                message: '注册失败',
-                showClose: true,
-                type: 'error'
-              })
-            }
+          let nodes = this.$refs['cascaderAddr'].getCheckedNodes()
+          let i = 0
+          let tags = []
+          for (i = 0; i < nodes.length; i++) {
+            tags.push(nodes[i].pathLabels.pop())
+          }
+          console.log(tags)
+          let userName = localStorage.getItem('UserName')
+          if (userName != null) {
+            this.$axios.post('/api/task/publishTask',
+              {
+                'user_name': localStorage.getItem('UserName'),
+                'task_title': this.ruleForm.name,
+                'task_info': this.ruleForm.introduce,
+                'task_bonus': this.ruleForm.price,
+                'begin_time': window.JSON.stringify(this.ruleForm.time[0]),
+                'end_time': window.JSON.stringify(this.ruleForm.time[1]),
+                'task_type': window.JSON.stringify(tags)
+              }
             )
+              .then((response) => {
+                let currentTime = response.data.currentTimes
+                this.$axios.post('/api/task/publishTask1',
+                  {
+                    'user_name': localStorage.getItem('UserName'),
+                    'current_time': currentTime
+                  }).then(response => {
+                  console.log(response.data)
+                })
+                this.$message.success({
+                  message: '创建成功',
+                  showClose: true,
+                  type: 'success'
+                })
+              },
+              (response) => {
+                this.$message.error({
+                  message: '创建失败',
+                  showClose: true,
+                  type: 'error'
+                })
+              })
+          } else {
+            this.$message.error({
+              message: '请先登录',
+              showClose: true,
+              type: 'error'
+            })
+          }
         } else {
           console.log('error submit!!')
           return false

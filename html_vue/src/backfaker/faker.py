@@ -89,6 +89,12 @@ class Task(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('task_id', type=str)
+        self.parser.add_argument('user_name', type=str)
+        self.parser.add_argument('task_title', type=str)
+        self.parser.add_argument('task_info', type=str)
+        self.parser.add_argument('task_bonus', type=str)
+        self.parser.add_argument('task_tags', type=str)
+        self.parser.add_argument('end_time', type=str)
 
     def post(self):
         data = self.parser.parse_args()

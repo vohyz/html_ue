@@ -9,6 +9,7 @@
             <el-scrollbar id="showplace" ref="myScrollbar" style="height:100%">
               <div v-for="item in items"
                 :key="item.label" style="width:95%;padding:2px;">
+              <el-avatar :style="item.avastyle">{{item.user}}</el-avatar>
               <el-tag
                 :style="item.style"
                 effect="dark">
@@ -48,7 +49,9 @@ export default {
       id: '',
       items: [],
       user: '',
-      board: []
+      board: [],
+      aim_avatar: 'data:image/jpeg;base64,',
+      my_avatar: ''
     }
   },
   sockets: {
@@ -66,9 +69,13 @@ export default {
       console.log('重新连接')
       this.$socket.emit('conect')
     },
+    server_avatar: function (data) {
+      this.aim_avatar = 'data:image/jpeg;base64,' + data
+      console.log('接收头像', this.aim_avatar)
+    },
     server_response: function (data) {
       console.log('接收数据', data)
-      this.items.push({label: data, user: this.aim_user, style: {float: 'left', margin: '5px'}})
+      this.items.push({label: data, user: this.aim_user, avastyle: {float: 'left', margin: '5px', height: '30px'}, style: {float: 'left', margin: '5px'}})
     },
     send_message: function (data) {
       this.$socket.emit('message', data)
@@ -78,21 +85,22 @@ export default {
       let i = 0
       for (; i < data.length; i++) {
         if (data[i][2] === this.user) {
-          this.items.push({label: data[i][0], user: this.user, style: {float: 'right', margin: '5px'}})
+          this.items.push({label: data[i][0], user: this.user, avastyle: {float: 'right', margin: '5px', height: '30px'}, style: {float: 'right', margin: '5px'}})
         } else {
-          this.items.push({label: data[i][0], user: this.aim_user, style: {float: 'left', margin: '5px'}})
+          this.items.push({label: data[i][0], user: this.aim_user, avastyle: {float: 'left', margin: '5px', height: '30px'}, style: {float: 'left', margin: '5px'}})
         }
       }
     }
   },
   created () {
     this.user = localStorage.getItem('User')
+    this.my_avatar = 'data:image/jpeg;base64,' + localStorage.getItem('User_avatar')
   },
   methods: {
     send () {
       let data = this.message
       this.$socket.emit('message', data)
-      this.items.push({label: data, user: this.user, style: {float: 'right', margin: '5px'}})
+      this.items.push({label: data, user: this.user, avastyle: {float: 'right', margin: '5px', height: '30px'}, style: {float: 'right', margin: '5px'}})
     },
     scrollDown () {
       this.$refs['myScrollbar'].wrap.scrollTop = this.$refs['myScrollbar'].wrap.scrollHeight
