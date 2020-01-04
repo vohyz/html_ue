@@ -1,5 +1,8 @@
 <template>
   <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+    <el-form-item label="Id" prop="id">
+      <el-input v-model="ruleForm.id" autocomplete="off"></el-input>
+    </el-form-item>
     <el-form-item label="用户名" prop="name">
       <el-input type="text" v-model="ruleForm.name" autocomplete="off"></el-input>
     </el-form-item>
@@ -13,8 +16,8 @@
       <el-input v-model.number="ruleForm.phone"></el-input>
     </el-form-item>
     <el-form-item label="验证码" prop="sms_code">
-      <el-input v-model.number="ruleForm.sms_code" style="width:60%;float:left"></el-input>
-      <el-button type="primary" @click="submitForm('ruleForm')" style="width:40%;float:left">获取验证码</el-button>
+      <el-input v-model.number="ruleForm.vcode" style="width:60%;float:left"></el-input>
+      <el-button type="primary" @click="send_smscode" style="width:40%;float:left">获取验证码</el-button>
     </el-form-item>
     <el-form-item label="年龄" prop="age">
       <el-input v-model.number="ruleForm.age"></el-input>
@@ -35,6 +38,11 @@
 export default {
   name: 'registerform',
   data () {
+    var validateId = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('ID不能为空'))
+      }
+    }
     var validateName = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入用户名'))
@@ -84,8 +92,23 @@ export default {
         callback()
       }
     }
+    var checkphone = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入手机号'))
+      } else {
+        callback()
+      }
+    }
+    var checksms = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入验证码'))
+      } else {
+        callback()
+      }
+    }
     return {
       ruleForm: {
+        id: '',
         name: '',
         pass: '',
         checkPass: '',
@@ -95,6 +118,9 @@ export default {
         sex: ''
       },
       rules: {
+        id: [
+          { validator: validateId, trigger: 'blur' }
+        ],
         name: [
           { validator: validateName, trigger: 'blur' }
         ],
@@ -109,31 +135,62 @@ export default {
         ],
         sex: [
           { validator: checksex, trigger: 'change' }
+        ],
+        phone:[
+          { validator: checkphone, trigger: 'blur' }
+        ],
+        vcode:[
+          { validator: checksms, trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
+    send_smscode () {
+      this.$axios.post('http://39.107.229.211:5003/sms',
+        {
+          'userphone': this.ruleForm.phone
+        }
+      )
+        .then((response) => {
+            this.$message.success({
+              message: '获取成功',
+              showClose: true,
+              type: 'success'
+            })
+          },
+          (response) => {
+            this.$message.error({
+              message: '获取失败',
+              showClose: true,
+              type: 'error'
+            })
+          }
+        )
+    },
     submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.$axios.post('/register',
+      // this.$refs[formName].validate((valid) => {
+        // if (valid) {
+          this.$axios.post('/api/register',
             {
-              'name': this.ruleForm.name,
-              'pass': this.ruleForm.pass,
-              'checkPass': this.ruleForm.checkPass,
-              'phone': this.ruleForm.phone,
-              'vcode': this.ruleForm.vcode,
-              'age': this.ruleForm.age,
-              'sex': this.ruleForm.sex
+              'user_id': this.ruleForm.id,
+              'user_name': this.ruleForm.name,
+              'user_password': this.ruleForm.pass,
+              'user_phone': this.ruleForm.phone,
+              'user_code': this.ruleForm.vcode,
+              'user_gender': this.ruleForm.sex
             }
           )
             .then((response) => {
-              this.$message.success({
-                message: '提交成功',
-                showClose: true,
-                type: 'success'
-              })
+              if (response.data.status === 'wrong')
+                this.$message.error(response.data.details)
+              else {
+                this.$message.success({
+                  message: '提交成功',
+                  showClose: true,
+                  type: 'success'
+                })
+              }
             },
             (response) => {
               this.$message.error({
@@ -141,45 +198,16 @@ export default {
                 showClose: true,
                 type: 'error'
               })
-            }
-            )
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+            })
+        // } else {
+        //   console.log('error submit!!')
+        //   return false
+        // }
+      // }
+      // )
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
-    },
-    send_smscode (formName) { // 此处需要补全图像验证码以及手机的validate
-      this.ruleForm.phone.validate((valid) => {
-        if (valid) {
-          this.$axios.post('/sms_code',
-            {
-              'phone': this.ruleForm.phone
-            }
-          )
-            .then((response) => {
-              this.$message.success({
-                message: '提交成功',
-                showClose: true,
-                type: 'success'
-              })
-            },
-            (response) => {
-              this.$message.error({
-                message: '注册失败',
-                showClose: true,
-                type: 'error'
-              })
-            }
-            )
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
     }
   }
 }
