@@ -132,6 +132,8 @@ export default {
     call (row, column, cell, event) {
       if (column.label === '操作') {
         this.gridData.splice(row, 1)
+      } else if (row.name === '系统') {
+        console.log(1)
       } else {
         this.aim_user = row.name
         this.chated = true

@@ -186,7 +186,7 @@ export default {
                 this.$message.error(response.data.details)
               else {
                 this.$message.success({
-                  message: '提交成功',
+                  message: response.data.details,
                   showClose: true,
                   type: 'success'
                 })

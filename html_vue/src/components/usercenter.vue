@@ -108,6 +108,7 @@ export default {
   mounted () {
     this.user_name = localStorage.getItem('UserName')
     this.src = 'data:image/jpeg;base64,' + localStorage.getItem('User_avatar')
+    this.$router.push('/usercenter/workboard?type=published')
   }
 }
 </script>

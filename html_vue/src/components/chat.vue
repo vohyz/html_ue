@@ -75,6 +75,12 @@ export default {
     send_message: function (data) {
       this.$socket.emit('message', data)
     },
+    getup: function (data) {
+      this.$parent.getup()
+    },
+    getdown: function (data) {
+      this.$parent.getdown()
+    },
     server_history: function (data) {
       console.log('接收历史', data)
       let i = 0

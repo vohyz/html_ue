@@ -35,12 +35,14 @@
           <div class="avatar" style="width: auto;float: left">
             <div class="picture">
               <el-avatar fit="fill" :size="90" :src="userAvatar"></el-avatar>
-              <div class="status"></div>
+              <div class="status" :style="status"></div>
             </div>
           </div>
           <div class="name">
             <span style="font-size: x-large;font-weight: 500">{{task[0].publisher}}</span><br>
-            <span style="font-size: small;color: #72767b;font-style:oblique">最近登录: 2小时前</span>
+            <span style="font-size: small;color: #72767b;font-style:oblique">当前状态:</span>
+            <span style="font-size: small;color: #72767b;font-style:oblique" v-if="up">在线</span>
+            <span style="font-size: small;color: #72767b;font-style:oblique" v-else>离线</span>
           </div>
         </div>
         <div class="chatView" style="height: 300px;width: 400px;">
@@ -62,7 +64,16 @@ export default {
       userId: '',
       userAvatar: '',
       flag: 0,
-      userflag: true
+      userflag: true,
+      up: false,
+      status: {
+        'background-color': '#CE3C34',
+        'border-radius': '100%',
+        'width': '16px',
+        'height': '16px',
+        'float': 'right',
+        'margin-top': '-15px'
+      }
     }
   },
   components: {
@@ -112,6 +123,7 @@ export default {
           'user_name': this.task[0].publisher
         }).then((response) => {
         this.userId = response.data.user_Id
+        this.$socket.emit('checkup', this.task[0].publisher)
         this.userAvatar = 'data:image/jpeg;base64,' + response.data.user_avatar
       })
         .catch((error) => {
@@ -142,6 +154,7 @@ export default {
         }).then((response) => {
           console.log(response)
           this.$message.success('领取成功')
+          this.$socket.emit('gettask', this.task_id + ' ' + this.task[0].publisher)
           this.$router.push('/index')
         })
           .catch((error) => {
@@ -159,6 +172,7 @@ export default {
         }).then((response) => {
           console.log(response)
           this.$message.success('任务完成')
+          this.$socket.emit('finishtask', this.task_id + ' ' + this.task[0].receiver)
           this.$router.push('/usercenter')
         })
           .catch((error) => {
@@ -167,6 +181,14 @@ export default {
       } else {
         this.$message.error('您还没有登录!请登录')
       }
+    },
+    getup () {
+      this.up = true
+      this.status['background-color'] = '#13ce66'
+    },
+    getdown () {
+      this.up = false
+      this.status['background-color'] = '#CE3C34'
     }
   }
 }
@@ -201,14 +223,6 @@ export default {
   .picture{
     text-align: left;
     width: 100px;
-  }
-  .status{
-    background-color: #13ce66;
-    border-radius: 100%;
-    width: 16px;
-    height: 16px;
-    float: right;
-    margin-top: -15px;
   }
   .name{
     float: left;

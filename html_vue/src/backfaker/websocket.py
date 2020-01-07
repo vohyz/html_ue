@@ -20,6 +20,7 @@ class MyCustomNamespace(Namespace):
     def on_disconnect(self):
         sid = request.sid
         print('客户端断开连接！-{}'.format(sid))
+        emit('getdown', self.nametable[sid], broadcast=True)
         # del self.pool[self.user_id]
 
     def close_room(self, room):
@@ -33,7 +34,15 @@ class MyCustomNamespace(Namespace):
         user = User(sid, data)
         self.pool[user.id] = user
         self.nametable[sid] = data
+        emit('getup', data, broadcast=True)
         # self.pool[self.user_id] = (self.sid, self)
+
+    def on_checkup(self, data):
+        sid = request.sid
+        if data in self.pool:
+            emit('getup', '1', room = sid)
+        else:
+            emit('getdown', '1', room = sid)
 
     def on_my_avatar(self, data):
         sid = request.sid
@@ -59,14 +68,28 @@ class MyCustomNamespace(Namespace):
             if self.pool[receiveid].aim == sendid:
                 emit('server_response', data, room=self.pool[receiveid].sid)
             else:
-                self.sendnotice(sendid, receiveid, data)
+                self.sendnotice(sendid, receiveid, '发来了一条消息')
         else:
             pass            # 不在线的情况 存入notice表
         addmessage(sendid, data, sendid, receiveid)
+
+    def on_gettask(self, data):     # 发送消息
+        sid = request.sid
+        sendid = self.nametable[sid]
+        datadetails = data.split()
+        receiveid = datadetails[1]
+        self.sendnotice('系统', receiveid, sendid + '接取了您的需求' + datadetails[0])
     
+    def on_finishtask(self, data):     # 发送消息
+        sid = request.sid
+        sendid = self.nametable[sid]
+        datadetails = data.split()
+        receiveid = datadetails[1]
+        self.sendnotice('系统', receiveid, '您接取的来自' + sendid +'的任务' + datadetails[0] + '已被确认完成')
+        
     def sendnotice(self, sendid, receiveid, data):
         t = datetime.datetime.now().strftime('%H:%M:%S')
-        params = {'time':t, 'name':sendid, 'content':'发来了一条消息'}
+        params = {'time': t, 'name': sendid, 'content': data}
         emit('server_notice', params, room = self.pool[receiveid].sid)
 
 class User:
@@ -87,6 +110,7 @@ def addmessage(idd, content, sender, receiver):
         conn,cursor = connect_mysql()           # 连接到mysql
         t = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         sql = 'INSERT INTO ChatMessage(content, `time`, sender, receiver) VALUES (\"%s\", \"%s\", \"%s\", \"%s\")'%(content, t, sender, receiver)
+        print(sql)
         cursor.execute(sql) 
         conn.commit()
         cursor.close()
